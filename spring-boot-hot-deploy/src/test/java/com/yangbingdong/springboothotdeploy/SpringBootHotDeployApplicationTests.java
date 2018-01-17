@@ -11,6 +11,7 @@ public class SpringBootHotDeployApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		System.out.println("this is contextLoads");
 	}
 
 }
