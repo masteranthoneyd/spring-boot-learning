@@ -28,7 +28,8 @@ public class ImageUtil {
 						.mapToObj(x -> IntStream.range(0, img.getCols())
 												.parallel()
 												.mapToObj(y -> {
-													BufferedImage bufferedImage = new BufferedImage(chunkWidth, chunkHeight, image.getType());
+													BufferedImage bufferedImage = new BufferedImage(chunkWidth, chunkHeight, image
+															.getType());
 													Graphics2D gr = bufferedImage.createGraphics();
 													gr.drawImage(image, 0, 0,
 															chunkWidth, chunkHeight,
