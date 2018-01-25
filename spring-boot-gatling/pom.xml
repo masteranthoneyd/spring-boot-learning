@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.yangbingdong</groupId>
+        <artifactId>spring-boot-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>spring-boot-combine-annotation</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+
+    <name>spring-boot-gatling</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <gatling-plugin.version>2.2.4</gatling-plugin.version>
+        <gatling-charts-highcharts.version>2.3.0</gatling-charts-highcharts.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- 性能测试 Gatling -->
+        <dependency>
+            <groupId>io.gatling.highcharts</groupId>
+            <artifactId>gatling-charts-highcharts</artifactId>
+            <version>${gatling-charts-highcharts.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-maven-plugin</artifactId>
+                <version>${gatling-plugin.version}</version>
+                <configuration>
+                    <!-- 测试脚本 -->
+                    <simulationClass>com.yangbingdong.springbootgatling.gatling.ApiGatlingSimulationTest</simulationClass>
+                    <!-- 结果输出地址 -->
+                    <resultsFolder>/home/ybd/test/gatling</resultsFolder>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

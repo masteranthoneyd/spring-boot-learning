@@ -10,8 +10,10 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <modules>
-        <module>spring-boot-parent</module>
+        <module>spring-boot-combine-annotation</module>
+        <module>spring-boot-gatling</module>
         <module>spring-boot-hot-deploy</module>
+        <module>spring-boot-parent</module>
     </modules>
 
 </project>
