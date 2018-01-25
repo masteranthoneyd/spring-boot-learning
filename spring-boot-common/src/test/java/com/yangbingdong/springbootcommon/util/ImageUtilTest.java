@@ -3,6 +3,9 @@ package com.yangbingdong.springbootcommon.util;
 import com.yangbingdong.springbootcommon.util.ImageUtil.Image;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -16,6 +19,8 @@ import java.util.List;
  * @date 18-1-25
  * @contact yangbingdong@1994.gmail
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ImageUtilTest {
 
 	@Test

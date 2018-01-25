@@ -17,6 +17,7 @@
         <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
         <maven.test.skip>true</maven.test.skip>
 
+        <spring-boot-common.version>0.0.1-SNAPSHOT</spring-boot-common.version>
         <hikariCP.version>2.7.1</hikariCP.version>
         <gatling-plugin.version>2.2.4</gatling-plugin.version>
     </properties>
@@ -53,8 +54,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.yangbingdong</groupId>
+            <artifactId>spring-boot-common</artifactId>
+            <version>${spring-boot-common.version}</version>
+        </dependency>
         <!-- Spring Boot 依赖-->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
