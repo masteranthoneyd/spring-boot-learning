@@ -40,6 +40,7 @@
 
     <build>
         <plugins>
+            <!-- Gatling Maven 插件， 使用： mvn gatling:execute 命令运行 -->
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>

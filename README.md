@@ -12,3 +12,6 @@
 |                                          |                 |
 |                                          |                 |
 
+**启动顺序**：
+
+`spring-boot-common` -> `spring-boot-parent` -> 其他模块
