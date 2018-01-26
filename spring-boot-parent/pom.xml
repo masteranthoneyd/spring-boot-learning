@@ -19,7 +19,6 @@
 
         <spring-boot-common.version>0.0.1-SNAPSHOT</spring-boot-common.version>
         <hikariCP.version>2.7.1</hikariCP.version>
-        <gatling-plugin.version>2.2.4</gatling-plugin.version>
     </properties>
 
     <dependencyManagement>
