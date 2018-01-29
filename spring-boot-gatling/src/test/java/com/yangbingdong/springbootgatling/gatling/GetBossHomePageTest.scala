@@ -17,7 +17,7 @@ class GetBossHomePageTest extends Simulation {
 
   val scn2: ScenarioBuilder = scenario("GetBossHomePage").exec(builder)
 
-  setUp(scn.inject(atOnceUsers(50))).maxDuration(FiniteDuration.apply(10, TimeUnit.MINUTES))
+  setUp(scn.inject(atOnceUsers(10))).maxDuration(FiniteDuration.apply(10, TimeUnit.MINUTES))
   //    setUp(scn2.inject(constantUsersPerSec(50) during 10)).maxDuration(FiniteDuration.apply(10, TimeUnit.MINUTES))
 
 }

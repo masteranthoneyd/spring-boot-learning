@@ -5,3 +5,7 @@ spring:
       enabled: true
       #classpath目录下的WEB-INF文件夹内容修改不重启
       exclude: WEB-INF/**
+server:
+  undertow:
+    accesslog:
+      enabled: false
