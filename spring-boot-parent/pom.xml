@@ -66,6 +66,19 @@
             </exclusions>
         </dependency>
 
+        <!-- 高性能日志框架 Log4j2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <!-- Log4j2 异步支持 -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>${disruptor.version}</version>
+        </dependency>
+
         <!-- 提供 Spring Boot 测试支持 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,19 +103,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
-
-        <!-- 高性能日志框架 Log4j2 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-
-        <!-- Log4j2 异步支持 -->
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-            <version>${disruptor.version}</version>
         </dependency>
 
         <!-- 提供自定义元数据支持 -->
