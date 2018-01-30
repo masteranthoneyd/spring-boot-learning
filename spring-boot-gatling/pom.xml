@@ -53,6 +53,7 @@
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
             <version>${gatling-charts-highcharts.version}</version>
+            <!-- 由于配置了log4j2，运行Gatling时需要**注释**以下的 exclusions，否则会抛异常，但貌似不影响测试结果 -->
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
@@ -78,6 +79,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

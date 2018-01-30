@@ -7,14 +7,13 @@
 
     <!-- 日志文件目录、压缩文件目录、日志格式配置 -->
     <properties>
-        <Property name="fileName">/home/ybd/logs/log</Property>
+        <Property name="fileName">/home/ybd/logs</Property>
         <Property name="fileGz">/home/ybd/logs/7z</Property>
         <Property name="PID">????</Property>
         <!--<Property name="LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS z}}{faint} %clr{%5p} %clr{${sys:PID}}{magenta}
             %clr{-&#45;&#45;}{faint} %clr{[%t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx
         </Property>-->
-        <Property name="LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS z}}{faint} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{[%t]}{faint} %clr{%logger{36}}{cyan} %L %clr{%M}{magenta} %clr{:}{faint}
-            %clr{---}{faint} %msg%n%xwEx
+        <Property name="LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} | %clr{%5p} | %clr{${sys:PID}}{magenta} | %clr{%15.15t}{faint} | %clr{%-50.50c{1.}}{cyan} | %5L | %clr{%M}{magenta} | %msg%n%xwEx
         </Property>
     </properties>
 
@@ -69,14 +68,14 @@
     <Loggers>
         <Root level="debug" includeLocation="true">
             <AppenderRef ref="console"/>
-            <AppenderRef ref="infoFile"/>
-            <AppenderRef ref="errorFile"/>
+            <!--<AppenderRef ref="infoFile"/>
+            <AppenderRef ref="errorFile"/>-->
         </Root>
 
         <AsyncRoot level="debug" includeLocation="true">
             <AppenderRef ref="console"/>
-            <AppenderRef ref="infoFile"/>
-            <AppenderRef ref="errorFile"/>
+            <!--<AppenderRef ref="infoFile"/>
+            <AppenderRef ref="errorFile"/>-->
         </AsyncRoot>
     </Loggers>
 
