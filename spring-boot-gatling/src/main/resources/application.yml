@@ -16,3 +16,7 @@ spring:
       enabled: true
       # 配置控制台路径
       path: /console
+
+  output:
+    ansi:
+      enabled: always
