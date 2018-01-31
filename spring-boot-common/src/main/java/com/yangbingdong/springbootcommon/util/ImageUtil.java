@@ -1,8 +1,7 @@
 package com.yangbingdong.springbootcommon.util;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,8 +42,7 @@ public class ImageUtil {
 	}
 
 	@Builder
-	@Getter
-	@Setter
+	@Data
 	public static class Image {
 		private final InputStream inputStream;
 		private final int rows;
