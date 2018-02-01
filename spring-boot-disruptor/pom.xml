@@ -23,7 +23,7 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
 
-        <!-- Disruptor 核心依赖 -->
+        <!-- Disruptor 核心依赖，父项目已经依赖过，注释掉 -->
         <!--<dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
