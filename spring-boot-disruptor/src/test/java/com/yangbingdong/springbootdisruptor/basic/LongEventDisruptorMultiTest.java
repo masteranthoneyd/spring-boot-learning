@@ -1,9 +1,11 @@
 package com.yangbingdong.springbootdisruptor.basic;
 
+import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import com.lmax.disruptor.util.DaemonThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -31,6 +33,30 @@ public class LongEventDisruptorMultiTest {
 		LongEventHandler3 c3 = new LongEventHandler3();
 
 		disruptor.handleEventsWith(c1, c2).then(c3);
+
+		LongEventProducerWithTranslator longEventProducerWithTranslator = new LongEventProducerWithTranslator();
+
+		disruptor.start();
+
+		new Thread(() -> produce(disruptor, longEventProducerWithTranslator, 0, 100)).start();
+
+		TimeUnit.SECONDS.sleep(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void exceptionTest() throws InterruptedException {
+		int bufferSize = 1 << 8;
+
+		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.MULTI, new YieldingWaitStrategy());
+
+		disruptor.handleEventsWith((EventHandler<LongEvent>) (event, sequence, endOfBatch) -> {
+			if (sequence == 3) {
+				throw new IllegalArgumentException("非法！！！！！！！！");
+			}else {
+				System.out.println("event: " + event);
+			}
+		});
 
 		LongEventProducerWithTranslator longEventProducerWithTranslator = new LongEventProducerWithTranslator();
 
@@ -83,6 +109,7 @@ public class LongEventDisruptorMultiTest {
 				TimeUnit.MILLISECONDS.sleep(20);
 			}
 		} catch (Exception e) {
+			System.out.println("catch error.............");
 			e.printStackTrace();
 		}
 	}
