@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LongEventHandler2 implements EventHandler<LongEvent> {
 	@Override
 	public void onEvent(LongEvent event, long sequence, boolean endOfBatch) {
-		log.info("handle2 event: {}, sequence: {}, endOfBatch: {}", event, sequence, endOfBatch);
+		System.out.println("c2");
+//		log.info("handle2 event: {}, sequence: {}, endOfBatch: {}", event, sequence, endOfBatch);
 	}
 }

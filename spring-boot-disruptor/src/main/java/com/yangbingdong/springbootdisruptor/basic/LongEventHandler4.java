@@ -10,10 +10,10 @@ import lombok.extern.slf4j.Slf4j;
  * @contact yangbingdong@1994.gmail
  */
 @Slf4j
-public class LongEventHandler implements EventHandler<LongEvent> {
+public class LongEventHandler4 implements EventHandler<LongEvent> {
 	@Override
 	public void onEvent(LongEvent event, long sequence, boolean endOfBatch) {
-		System.out.println("c1");
-//		log.info("handle event: {}, sequence: {}, endOfBatch: {}", event, sequence, endOfBatch);
+		System.out.println("c4: c2 has completed");
+//		log.info("handle4 event: {}, sequence: {}, endOfBatch: {} \n", event, sequence, endOfBatch);
 	}
 }

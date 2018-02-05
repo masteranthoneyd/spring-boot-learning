@@ -1,8 +1,8 @@
 package com.yangbingdong.springbootdisruptor.basic;
 
 import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.LiteBlockingWaitStrategy;
 import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
@@ -22,17 +22,18 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class LongEventDisruptorMultiTest {
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void multiCustomerOneProducerTest() throws InterruptedException {
 		int bufferSize = 1 << 8;
 
-		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, Executors.defaultThreadFactory(), ProducerType.MULTI, new YieldingWaitStrategy());
+		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, Executors.defaultThreadFactory(), ProducerType.SINGLE, new LiteBlockingWaitStrategy());
 
 		LongEventHandler c1 = new LongEventHandler();
 		LongEventHandler2 c2 = new LongEventHandler2();
-		LongEventHandler3 c3 = new LongEventHandler3();
 
-		disruptor.handleEventsWith(c1, c2).then(c3);
+		disruptor.handleEventsWith(c1, c2)
+				 .then((EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("c1 and c2 has completed \n"));
 
 		LongEventProducerWithTranslator longEventProducerWithTranslator = new LongEventProducerWithTranslator();
 
@@ -45,22 +46,78 @@ public class LongEventDisruptorMultiTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void exceptionTest() throws InterruptedException {
+	public void multiCustomerOneProducerTest2() throws InterruptedException {
 		int bufferSize = 1 << 8;
 
-		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.MULTI, new YieldingWaitStrategy());
+		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, Executors.defaultThreadFactory(), ProducerType.SINGLE, new LiteBlockingWaitStrategy());
 
-		disruptor.handleEventsWith((EventHandler<LongEvent>) (event, sequence, endOfBatch) -> {
-			if (sequence == 3) {
-				throw new IllegalArgumentException("非法！！！！！！！！");
-			}else {
-				System.out.println("event: " + event);
-			}
-		});
+		LongEventHandler c1a = new LongEventHandler();
+		LongEventHandler2 c2a = new LongEventHandler2();
+		LongEventHandler3 c1b = new LongEventHandler3();
+		LongEventHandler4 c2b = new LongEventHandler4();
+
+		disruptor.handleEventsWith(c1a, c2a);
+		disruptor.after(c1a).then(c1b);
+		disruptor.after(c2a).then(c2b);
+		disruptor.after(c1b, c2b)
+				 .then((EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("last costumer \n"));
 
 		LongEventProducerWithTranslator longEventProducerWithTranslator = new LongEventProducerWithTranslator();
 
 		disruptor.start();
+
+		new Thread(() -> produce(disruptor, longEventProducerWithTranslator, 0, 30)).start();
+
+		TimeUnit.SECONDS.sleep(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void multiCustomerOneProducerTest3() throws InterruptedException {
+		int bufferSize = 1 << 8;
+
+		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, Executors.defaultThreadFactory(), ProducerType.SINGLE, new LiteBlockingWaitStrategy());
+
+		EventHandler a = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process a... event: " + event);
+		EventHandler b = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process b... event: " + event);
+		EventHandler c = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process c... event: " + event);
+		EventHandler d = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process d... event: " + event);
+		EventHandler e = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process e... a,b,c has completed, event: " + event + "\n");
+		EventHandler f = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process f... d has completed, event: " + event + "\n");
+		EventHandler g = (EventHandler<LongEvent>) (event, sequence, endOfBatch) -> System.out.println("process g... e,f has completed, event: " + event + "\n\n");
+
+		disruptor.handleEventsWith(a, b, c, d);
+		disruptor.after(a, b, c).then(e);
+		disruptor.after(d).then(f);
+		disruptor.after(e, f).then(g);
+
+		LongEventProducerWithTranslator longEventProducerWithTranslator = new LongEventProducerWithTranslator();
+
+		disruptor.start();
+
+		new Thread(() -> produce(disruptor, longEventProducerWithTranslator, 0, 2)).start();
+
+		TimeUnit.SECONDS.sleep(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void exceptionTest() throws InterruptedException {
+		int bufferSize = 1 << 8;
+
+		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new LiteBlockingWaitStrategy());
+
+		disruptor.handleEventsWith((EventHandler<LongEvent>) (event, sequence, endOfBatch) -> {
+			if (sequence == 3) {
+				throw new IllegalArgumentException("这是一个模拟异常");
+			} else {
+				System.out.println("event: " + event);
+			}
+		});
+
+		disruptor.start();
+
+		LongEventProducerWithTranslator longEventProducerWithTranslator = new LongEventProducerWithTranslator();
 
 		new Thread(() -> produce(disruptor, longEventProducerWithTranslator, 0, 100)).start();
 
@@ -74,7 +131,7 @@ public class LongEventDisruptorMultiTest {
 
 		int bufferSize = 1 << 8;
 
-		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, Executors.defaultThreadFactory(), ProducerType.MULTI, new YieldingWaitStrategy());
+		Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, Executors.defaultThreadFactory(), ProducerType.MULTI, new LiteBlockingWaitStrategy());
 
 		disruptor.handleEventsWith((event, sequence, endOfBatch) -> {
 			/* 由于log4j2本身是异步的，所以有可能第一个handle读取到的是handle2已经处理过的event */
