@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootcommon.util.function;
+package com.yangbingdong.springbootcommon.utils.function;
 
 
 import java.util.function.Consumer;
@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  * @date 17-11-28.
  * Lambda包装检测异常为非检测异常
  */
-public class Trier {
+public final class Trier {
 	public static <T, R> Function<T, R> tryFunction(UncheckedFunction<T, R> function) {
 		requireNonNull(function);
 		return t -> {

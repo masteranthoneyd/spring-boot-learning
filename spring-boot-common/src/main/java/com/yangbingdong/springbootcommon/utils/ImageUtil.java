@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootcommon.util;
+package com.yangbingdong.springbootcommon.utils;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * @author ybd
  */
-public class ImageUtil {
+public final class ImageUtil {
 	public static List<BufferedImage> cutImage(Image img) throws IOException {
 		BufferedImage image = ImageIO.read(img.getInputStream());
 		int chunkWidth = image.getWidth() / img.getCols();

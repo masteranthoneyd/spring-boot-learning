@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootcommon.util.function;
+package com.yangbingdong.springbootcommon.utils.function;
 
 /**
  * @author ybd

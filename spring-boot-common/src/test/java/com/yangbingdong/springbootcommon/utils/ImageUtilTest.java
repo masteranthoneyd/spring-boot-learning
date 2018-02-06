@@ -1,6 +1,6 @@
-package com.yangbingdong.springbootcommon.util;
+package com.yangbingdong.springbootcommon.utils;
 
-import com.yangbingdong.springbootcommon.util.ImageUtil.Image;
+import com.yangbingdong.springbootcommon.utils.ImageUtil.Image;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
