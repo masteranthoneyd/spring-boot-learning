@@ -27,6 +27,14 @@ class ApiGatlingSimulationTest extends Simulation {
     )
   }
 
-  setUp(scn.inject(atOnceUsers(30))).maxDuration(FiniteDuration.apply(10, "minutes"))
+  val scn2: ScenarioBuilder = scenario("AddAndFindPersons").exec(
+    http("GetPerson-API")
+      .get("http://localhost:8080/persons/1")
+      .check(status.is(200))
+  )
+
+  setUp(scn.inject(atOnceUsers(30))).maxDuration(FiniteDuration.apply(10, TimeUnit.MINUTES))
+
+//  setUp(scn2.inject(constantUsersPerSec(1500) during 20)).maxDuration(FiniteDuration.apply(10, TimeUnit.MINUTES))
 
 }
