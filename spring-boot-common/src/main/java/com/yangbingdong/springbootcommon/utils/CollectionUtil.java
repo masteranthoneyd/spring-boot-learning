@@ -1,8 +1,9 @@
 package com.yangbingdong.springbootcommon.utils;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author ybd
@@ -11,11 +12,15 @@ import java.util.Collection;
  */
 public final class CollectionUtil {
 
-	public static <T> boolean isEmpty(Collection<T> collection) {
-		return CollectionUtils.isEmpty(collection);
+	public static boolean isEmpty(Collection<?> collection) {
+		return collection == null || collection.isEmpty();
 	}
 
-	public static <T> boolean isNotEmpty(Collection<T> collection) {
+	public static boolean isNotEmpty(Collection<?> collection) {
 		return !isEmpty(collection);
+	}
+
+	public static <K, V> Map<K, V> unModify(Map<? extends K, ? extends V> map) {
+		return MapUtils.unmodifiableMap(map);
 	}
 }

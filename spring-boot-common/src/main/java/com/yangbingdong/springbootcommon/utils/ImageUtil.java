@@ -18,6 +18,13 @@ import static java.util.stream.Collectors.toList;
  * @author ybd
  */
 public final class ImageUtil {
+
+	/**
+	 * 图片平等切割
+	 * @param img 数据实体 -> 行、列、输入流
+	 * @return 平等切割好的图片列表
+	 * @throws IOException
+	 */
 	public static List<BufferedImage> cutImage(Image img) throws IOException {
 		BufferedImage image = ImageIO.read(img.getInputStream());
 		int chunkWidth = image.getWidth() / img.getCols();

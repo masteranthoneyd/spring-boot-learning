@@ -1,6 +1,6 @@
 Configuration:
   status: "OFF"
-  monitorInterval: 10
+  monitorInterval: 0
 
   Properties:
     Property:
