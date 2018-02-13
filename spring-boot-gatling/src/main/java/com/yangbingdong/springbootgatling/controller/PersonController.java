@@ -29,8 +29,7 @@ public class PersonController {
 
 	@GetMapping("/persons/{id}")
 	public Person findById(@PathVariable("id") Long id) {
-//		return repository.findById(id).orElse(null);
-		return repository.findOne(id);
+		return repository.findById(id).orElse(null);
 	}
 
 }

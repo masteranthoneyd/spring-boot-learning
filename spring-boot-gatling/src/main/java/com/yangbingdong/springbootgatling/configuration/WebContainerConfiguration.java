@@ -1,8 +1,5 @@
 package com.yangbingdong.springbootgatling.configuration;
 
-import io.undertow.UndertowOptions;
-import org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -17,10 +14,10 @@ public class WebContainerConfiguration {
 	 * 支持HTTP2
 	 * @return
 	 */
-	@Bean
+	/*@Bean
 	UndertowEmbeddedServletContainerFactory embeddedServletContainerFactory() {
 		UndertowEmbeddedServletContainerFactory factory = new UndertowEmbeddedServletContainerFactory();
 		factory.addBuilderCustomizers(builder -> builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true));
 		return factory;
-	}
+	}*/
 }

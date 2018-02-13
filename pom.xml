@@ -15,6 +15,8 @@
         <module>spring-boot-gatling</module>
         <module>spring-boot-hot-deploy</module>
         <module>spring-boot-parent</module>
+        <module>spring-boot-parent-dependencies</module>
+        <module>spring-boot-test-assertj</module>
     </modules>
 
 </project>

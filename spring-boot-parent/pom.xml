@@ -2,52 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <parent>
+        <groupId>com.yangbingdong</groupId>
+        <artifactId>spring-boot-parent-dependencies</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../spring-boot-parent-dependencies/pom.xml</relativePath>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.yangbingdong</groupId>
     <artifactId>spring-boot-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-
-        <spring-boot.version>1.5.10.RELEASE</spring-boot.version>
         <spring-boot-common.version>0.0.1-SNAPSHOT</spring-boot-common.version>
-        <hikariCP.version>2.7.1</hikariCP.version>
-        <disruptor.version>3.3.7</disruptor.version>
-        <assertj-core.version>3.9.0</assertj-core.version>
-
         <!-- maven 方式跳过 maven test, 等同 mvn package -Dmaven.test.skip=true -->
         <!-- Spring Boot 内部已经集成 maven-surefire-plugin 插件，可使用 <skipTests>true</skipTests> 跳过测试 -->
         <!-- 两者的区别在于 <maven.test.skip> 标签连 .class 文件都不会生成，而 <skipTests> 会编译生成 .class 文件-->
         <maven.test.skip>true</maven.test.skip>
     </properties>
-
-
-    <dependencyManagement>
-
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- HikariCP 高性能连接池 -->
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>${hikariCP.version}</version>
-            </dependency>
-        </dependencies>
-
-    </dependencyManagement>
 
     <dependencies>
         <!-- 通用工具包 -->
@@ -80,39 +53,24 @@
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
-            <version>${disruptor.version}</version>
         </dependency>
 
         <!-- 提供 Spring Boot 测试支持 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <exclusions>
-                <!-- 鉴于spring-boot-starter-test模块的assertj版本比较旧，故移除并使用最新版本 -->
-                <exclusion>
-                    <groupId>org.assertj</groupId>
-                    <artifactId>assertj-core</artifactId>
-                </exclusion>
-            </exclusions>
             <scope>test</scope>
-        </dependency>
-
-        <!-- 使用最新版的assertj，功能更强大 -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
         </dependency>
 
         <!-- Spring Mvc 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
             <exclusions>
-                <!-- 抛弃默认web容器tomcat，使用undertow -->
+                <!-- 使用undertow -->
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                    <artifactId>spring-boot-starter-reactor-netty</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -145,7 +103,6 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -158,7 +115,7 @@
         </pluginManagement>
     </build>
 
-    <repositories>
+    <!--<repositories>
         <repository>
             <id>ali-repos</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
@@ -176,6 +133,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
-    </pluginRepositories>
+    </pluginRepositories>-->
 
 </project>
