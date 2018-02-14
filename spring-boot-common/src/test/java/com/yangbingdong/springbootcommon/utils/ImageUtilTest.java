@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author ybd
  * @date 18-1-25
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

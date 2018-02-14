@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * @author ybd
  * @date 18-2-6
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 public class CollectionUtilTest {
 	private static List<Integer> collect;

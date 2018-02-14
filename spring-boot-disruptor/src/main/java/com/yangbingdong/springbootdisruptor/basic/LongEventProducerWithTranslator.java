@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 /**
  * @author ybd
  * @date 18-1-31
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 public class LongEventProducerWithTranslator implements EventTranslatorOneArg<LongEvent, ByteBuffer>{
 	@Override

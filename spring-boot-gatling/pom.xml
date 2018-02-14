@@ -24,22 +24,10 @@
     </properties>
 
     <dependencies>
-        <!-- 移除 Tomcat 连接池，使用 HikariCP  -->
+        <!-- 默认使用 HikariCP 连接池  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>tomcat-jdbc</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- 移除 tomcat-jdbc, Spring Boot 将会自动使用 HikariCP -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
         </dependency>
 
         <dependency>

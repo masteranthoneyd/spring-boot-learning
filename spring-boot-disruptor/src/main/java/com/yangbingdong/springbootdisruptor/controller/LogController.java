@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author ybd
  * @date 18-1-30
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @RestController
 @Slf4j

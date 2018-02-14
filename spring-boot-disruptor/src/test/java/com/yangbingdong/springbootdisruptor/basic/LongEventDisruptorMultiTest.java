@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author ybd
  * @date 18-1-31
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @Slf4j
 public class LongEventDisruptorMultiTest {

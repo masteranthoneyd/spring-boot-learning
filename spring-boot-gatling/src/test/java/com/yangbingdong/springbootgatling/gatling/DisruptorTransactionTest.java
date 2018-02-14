@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author ybd
  * @date 18-2-2
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @RunWith(SpringRunner.class)
 //@SpringBootTest

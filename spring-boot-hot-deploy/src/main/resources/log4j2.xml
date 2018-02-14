@@ -66,11 +66,12 @@
 
     <!-- Mixed sync/async -->
     <Loggers>
-        <Root level="debug" includeLocation="true">
+        <!-- 只能选其一 -->
+        <!--<Root level="debug" includeLocation="true">
             <AppenderRef ref="console"/>
-            <!--<AppenderRef ref="infoFile"/>
-            <AppenderRef ref="errorFile"/>-->
-        </Root>
+            <AppenderRef ref="infoFile"/>
+            <AppenderRef ref="errorFile"/>
+        </Root>-->
 
         <AsyncRoot level="debug" includeLocation="true">
             <AppenderRef ref="console"/>

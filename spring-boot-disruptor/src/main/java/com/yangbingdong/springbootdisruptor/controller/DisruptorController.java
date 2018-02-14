@@ -2,7 +2,7 @@ package com.yangbingdong.springbootdisruptor.controller;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.LiteBlockingWaitStrategy;
+import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 /**
  * @author ybd
  * @date 18-2-5
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @RestController
 public class DisruptorController {
@@ -28,7 +28,7 @@ public class DisruptorController {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void construct() {
-		disruptor = new Disruptor<>(LongEvent::new, 1 << 5, Executors.defaultThreadFactory(), ProducerType.SINGLE, new LiteBlockingWaitStrategy());
+		disruptor = new Disruptor<>(LongEvent::new, 1 << 5, Executors.defaultThreadFactory(), ProducerType.SINGLE, new BlockingWaitStrategy());
 
 		disruptor.handleEventsWith((EventHandler<LongEvent>) (event, sequence, endOfBatch) -> {
 			if (event.getValue() == 3) {

@@ -5,7 +5,7 @@ import com.yangbingdong.springbootcommon.utils.function.UncheckedExecution;
 /**
  * @author ybd
  * @date 18-2-6
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 public final class ExecutionTimer {
 	public static long timing(UncheckedExecution execution) {

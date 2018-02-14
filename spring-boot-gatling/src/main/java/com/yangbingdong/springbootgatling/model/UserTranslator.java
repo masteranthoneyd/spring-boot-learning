@@ -5,7 +5,7 @@ import com.lmax.disruptor.EventTranslatorOneArg;
 /**
  * @author ybd
  * @date 18-2-2
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 public class UserTranslator implements EventTranslatorOneArg<UserEvent, Person> {
 	@Override

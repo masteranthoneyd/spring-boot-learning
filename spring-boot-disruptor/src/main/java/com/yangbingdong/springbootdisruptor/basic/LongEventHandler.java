@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author ybd
  * @date 18-1-31
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @Slf4j
 public class LongEventHandler implements EventHandler<LongEvent> {

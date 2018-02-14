@@ -3,7 +3,7 @@ package com.yangbingdong.springbootcommon.utils.function;
 /**
  * @author ybd
  * @date 18-2-6
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 public interface UncheckedExecution {
 	void execute() throws Exception;

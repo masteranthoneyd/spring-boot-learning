@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author ybd
  * @date 18-2-8
- * @contact yangbingdong@1994.gmail
+ * @contact yangbingdong1994@gmail.com
  */
 @Data
 @AllArgsConstructor
