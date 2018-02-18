@@ -17,6 +17,7 @@
         <module>spring-boot-parent</module>
         <module>spring-boot-parent-dependencies</module>
         <module>spring-boot-test-assertj</module>
+        <module>spring-boot-async-and-schedule</module>
     </modules>
 
 </project>
