@@ -1,5 +1,7 @@
 package com.yangbingdong.springbootcommon.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -8,8 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author ybd
@@ -28,12 +32,12 @@ public class CollectionUtilTest {
 
 	@Test
 	public void isEmpty() {
-		Assertions.assertThat(CollectionUtil.isEmpty(collect)).isFalse();
+		assertThat(CollectionUtil.isEmpty(collect)).isFalse();
 	}
 
 	@Test
 	public void isNotEmpty() {
-		Assertions.assertThat(CollectionUtil.isNotEmpty(collect)).isTrue();
+		assertThat(CollectionUtil.isNotEmpty(collect)).isTrue();
 	}
 
 	@Test
@@ -46,5 +50,30 @@ public class CollectionUtilTest {
 		Assertions.assertThatThrownBy(() -> finalMap.put(2, Collections.singletonList("A")))
 				  .isInstanceOf(UnsupportedOperationException.class);
 
+	}
+
+	@Test
+	public void enumPoliticMap() {
+		assertThat(Handlers.MAP)
+				.containsOnlyKeys(Stream.of(Handlers.values())
+										.map(Handlers::getIndex)
+										.toArray(Integer[]::new));
+
+	}
+
+	@AllArgsConstructor
+	@Getter
+	enum Handlers {
+		FIRST_HANDLER(0, new Object()),
+		SECOND_HANDLER(1, new Object());
+
+		public static final Map<Integer, Object> MAP;
+
+		static {
+			MAP = CollectionUtil.enumPoliticMap(Handlers.values(), Handlers::getIndex, Handlers::getHandler);
+		}
+
+		private int index;
+		private Object handler;
 	}
 }

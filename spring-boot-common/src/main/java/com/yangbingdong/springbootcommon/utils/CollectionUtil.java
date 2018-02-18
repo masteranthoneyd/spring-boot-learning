@@ -4,6 +4,10 @@ import org.apache.commons.collections4.MapUtils;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author ybd
@@ -22,5 +26,9 @@ public final class CollectionUtil {
 
 	public static <K, V> Map<K, V> unModify(Map<? extends K, ? extends V> map) {
 		return MapUtils.unmodifiableMap(map);
+	}
+
+	public static <U, K, V> Map<K, V> enumPoliticMap(U[] u, Function<U, K> f1, Function<U, V> f2) {
+		return unModify(Stream.of(u).collect(toMap(f1, f2)));
 	}
 }
