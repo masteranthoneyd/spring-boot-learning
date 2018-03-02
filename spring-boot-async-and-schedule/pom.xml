@@ -14,7 +14,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>sprong-boot-async</name>
+	<name>spring-boot-async</name>
 	<description>Demo project for Spring Boot</description>
 
 
