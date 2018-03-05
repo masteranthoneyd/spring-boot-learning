@@ -3,11 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <!-- Inherit defaults from Spring Boot -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.0.RELEASE</version>
-    </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,6 +10,12 @@
     <artifactId>spring-boot-parent-dependencies</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.RELEASE</version>
+    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,7 +25,11 @@
         <disruptor.version>3.3.8</disruptor.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-collections4.version>4.1</commons-collections4.version>
+        <fastjson.version>1.2.46</fastjson.version>
+        <contiperf.version>2.1.0</contiperf.version>
+        <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
     </properties>
+
 
 
     <dependencyManagement>
@@ -47,6 +52,20 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>${commons-collections4.version}</version>
+            </dependency>
+
+            <!-- Ali fastjson  -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <!-- 性能测试 -->
+            <dependency>
+                <groupId>org.databene</groupId>
+                <artifactId>contiperf</artifactId>
+                <version>${contiperf.version}</version>
             </dependency>
         </dependencies>
 
