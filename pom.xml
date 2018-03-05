@@ -18,6 +18,8 @@
         <module>spring-boot-parent-dependencies</module>
         <module>spring-boot-test-assertj</module>
         <module>spring-boot-async-and-schedule</module>
+        <module>spring-boot-data-jpa</module>
+        <module>spring-boot-blockchain</module>
     </modules>
 
 </project>
