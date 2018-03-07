@@ -4,6 +4,8 @@ import com.yangbingdong.springbootdatajpa.domain.repository.PersonRepository;
 import com.yangbingdong.springbootdatajpa.domain.root.Person;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,15 @@ public class PersonController {
 	@GetMapping("/all")
 	public Flux<Person> findAll() {
 		return Flux.fromIterable(personRepository.findAll());
+	}
+
+	@GetMapping("/page")
+	public Page<Person> findByPage() {
+//		log.info(" \n 分页查询用户："
+//				+ " PageNumber = " + pageable.getPageNumber()
+//				+ " PageSize = " + pageable.getPageSize());
+		Page<Person> page = personRepository.findAll(PageRequest.of(1,3));
+		return page;
 	}
 
 	@GetMapping("/{id}")
