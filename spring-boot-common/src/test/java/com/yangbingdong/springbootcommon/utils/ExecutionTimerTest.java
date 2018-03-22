@@ -13,7 +13,10 @@ public class ExecutionTimerTest {
 
 	@Test
 	public void timing() throws Exception {
-		long exeTime = ExecutionTimer.timing(() -> TimeUnit.SECONDS.sleep(1));
+		long exeTime = ExecutionTimer.timing(() -> TimeUnit.SECONDS.sleep(1)).getTime();
 		System.out.println(exeTime);
+
+		double second = ExecutionTimer.timing(() -> TimeUnit.MILLISECONDS.sleep(1335)).getSecond();
+		System.out.println(second);
 	}
 }
