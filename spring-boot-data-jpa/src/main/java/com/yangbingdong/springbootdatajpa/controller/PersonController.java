@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * @author ybd
@@ -26,8 +26,8 @@ public class PersonController {
 	private final PersonRepository personRepository;
 
 	@GetMapping("/all")
-	public Flux<Person> findAll() {
-		return Flux.fromIterable(personRepository.findAll());
+	public List<Person> findAll() {
+		return personRepository.findAll();
 	}
 
 	@GetMapping("/page")
@@ -40,14 +40,14 @@ public class PersonController {
 	}
 
 	@GetMapping("/{id}")
-	public Mono<Person> findById(@PathVariable Long id) {
-		return Mono.just(personRepository.getOne(id));
+	public Person findById(@PathVariable Long id) {
+		return personRepository.getOne(id);
 	}
 
 	@GetMapping("/{name}")
-	public Mono<String> add(@PathVariable String name) {
+	public String add(@PathVariable String name) {
 		personRepository.save(new Person().setName(name));
-		return Mono.just("SUCCESS");
+		return "SUCCESS";
 	}
 
 }
