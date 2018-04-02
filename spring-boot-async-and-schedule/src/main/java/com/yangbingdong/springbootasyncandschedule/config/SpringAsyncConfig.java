@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author ybd
@@ -22,10 +23,14 @@ public class SpringAsyncConfig implements AsyncConfigurer {
 	@Bean
 	public Executor threadPoolTaskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(8);
-		executor.setMaxPoolSize(42);
+		executor.setCorePoolSize(10);
+		executor.setMaxPoolSize(20);
 		executor.setQueueCapacity(500);
+		executor.setKeepAliveSeconds(60);
 		executor.setThreadNamePrefix("asyncExecutor-");
+		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+		executor.setWaitForTasksToCompleteOnShutdown(true);
+		executor.setAwaitTerminationSeconds(60);
 		executor.initialize();
 		return executor;
 	}
@@ -37,6 +42,9 @@ public class SpringAsyncConfig implements AsyncConfigurer {
 		executor.setMaxPoolSize(42);
 		executor.setQueueCapacity(500);
 		executor.setThreadNamePrefix("MyExecutor-");
+		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+		executor.setWaitForTasksToCompleteOnShutdown(true);
+		executor.setAwaitTerminationSeconds(60);
 		executor.initialize();
 		return executor;
 	}
