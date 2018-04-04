@@ -3,7 +3,6 @@ package com.yangbingdong.springbootasyncandschedule.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -22,14 +21,14 @@ public class HelloController {
 //	private Executor threadPoolTaskExecutor;
 
 	@GetMapping("/hello")
-	public Mono<String> syaHello() throws InterruptedException, ExecutionException {
+	public String syaHello() throws InterruptedException, ExecutionException {
 		Future<String> stringFuture = someService.asyncMethodWithVoidReturnType();
 		while (!stringFuture.isDone()){
 			System.out.println("wait...");
 			Thread.sleep(500L);
 		}
 		System.out.println(stringFuture.get());
-		return Mono.just("Hello World");
+		return "Hello World";
 	}
 
 	/*@PostConstruct
