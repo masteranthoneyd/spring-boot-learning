@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
  * @contact yangbingdong1994@gmail.com
  */
 public class StringUtil {
+	public static final String COMMA = ",";
 
 	public static String lowercaseInitial(String s) {
 		return StringUtils.uncapitalize(s);
@@ -15,5 +16,9 @@ public class StringUtil {
 
 	public static String uppercaseInitial(String s) {
 		return StringUtils.capitalize(s);
+	}
+
+	public static boolean isEmpty(String s) {
+		return StringUtils.isEmpty(s);
 	}
 }
