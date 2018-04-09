@@ -11,17 +11,17 @@
             <PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
         </Console>
 
-        <!--<Kafka name="kafka" topic="log-collect">
+        <Kafka name="kafka" topic="log-collect">
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
             <Property name="bootstrap.servers">192.168.6.113:9092</Property>
-        </Kafka>-->
+        </Kafka>
     </Appenders>
 
     <Loggers>
         <AsyncRoot level="info" includeLocation="true">
             <AppenderRef ref="console"/>
-            <!--<AppenderRef ref="kafka"/>-->
+            <AppenderRef ref="kafka"/>
         </AsyncRoot>
     </Loggers>
 </configuration>

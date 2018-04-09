@@ -20,6 +20,10 @@
         <!-- Spring Boot 内部已经集成 maven-surefire-plugin 插件，可使用 <skipTests>true</skipTests> 跳过测试 -->
         <!-- 两者的区别在于 <maven.test.skip> 标签连 .class 文件都不会生成，而 <skipTests> 会编译生成 .class 文件-->
         <maven.test.skip>true</maven.test.skip>
+
+        <!-- resource插件编译Dockerfile后的位置-->
+        <dockerfile.compiled.position>${project.build.directory}/docker</dockerfile.compiled.position>
+        <docker.skip.build>false</docker.skip.build>
     </properties>
 
     <dependencies>
@@ -134,6 +138,67 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <!-- resources插件，使用@变量@形式获取Maven变量到Dockerfile中 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${resources.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>prepare-dockerfile</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <!-- 编译后Dockerfile的输出位置 -->
+                                <outputDirectory>${dockerfile.compiled.position}</outputDirectory>
+                                <resources>
+                                    <!-- Dockerfile位置 -->
+                                    <resource>
+                                        <directory>${project.basedir}/src/main/docker</directory>
+                                        <filtering>true</filtering>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- 集成Docker maven 插件 -->
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <!--配置变量，包括是否build、imageName、imageTag，非常灵活-->
+                        <skipDocker>${docker.skip.build}</skipDocker>
+                        <!--最后镜像产生了两个tag，版本和和最新的-->
+                        <forceTags>true</forceTags>
+                        <imageTags>
+                            <imageTag>${project.version}</imageTag>
+                            <imageTag>latest</imageTag>
+                        </imageTags>
+                        <imageName>${project.artifactId}</imageName>
+                        <dockerDirectory>${dockerfile.compiled.position}</dockerDirectory>
+                        <resources>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}</directory>
+                                <include>${project.build.finalName}.jar</include>
+                            </resource>
+                        </resources>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

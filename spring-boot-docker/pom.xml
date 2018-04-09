@@ -17,14 +17,14 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <kafka-clients.version>1.1.0</kafka-clients.version>
+        <!-- 是否跳过构建docker -->
+        <docker.skip.build>false</docker.skip.build>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka-clients.version}</version>
         </dependency>
 
         <dependency>
@@ -38,6 +38,18 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- resources插件，使用@变量@形式获取Maven变量到Dockerfile中 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+
+            <!-- 集成Docker maven 插件 -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

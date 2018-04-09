@@ -1,9 +1,13 @@
 package com.yangbingdong.docker.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.lang.Thread.currentThread;
+import static java.util.UUID.randomUUID;
 
 /**
  * @author ybd
@@ -15,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LogIntervalSender {
 	private AtomicInteger atomicInteger = new AtomicInteger(0);
 
-	/*@Scheduled(fixedDelay = 2000)
+	@Scheduled(fixedDelay = 2000)
 	public void doScheduled() {
 		try {
 			int i = atomicInteger.incrementAndGet();
@@ -24,7 +28,7 @@ public class LogIntervalSender {
 		} catch (Exception e) {
 			log.error("catch an exception:", e);
 		}
-	}*/
+	}
 
 	private void randomThrowException(int i) {
 		if (i % 10 == 0) {

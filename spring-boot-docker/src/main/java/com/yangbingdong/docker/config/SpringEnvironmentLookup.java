@@ -20,6 +20,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
  * @date 18-4-9
  * @contact yangbingdong1994@gmail.com
  */
+@SuppressWarnings("unused")
 @Plugin(name = "spring", category = StrLookup.CATEGORY)
 public class SpringEnvironmentLookup extends AbstractLookup {
 	private LinkedHashMap ymlData;
