@@ -28,6 +28,7 @@
         <fastjson.version>1.2.46</fastjson.version>
         <contiperf.version>2.1.0</contiperf.version>
         <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
+        <snakeyaml.version>1.19</snakeyaml.version>
     </properties>
 
 
@@ -67,6 +68,13 @@
                 <artifactId>contiperf</artifactId>
                 <version>${contiperf.version}</version>
             </dependency>
+
+            <!-- 解析YAML -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -89,30 +97,5 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>-->
-    <repositories>
-        <repository>
-            <id>spring-snapshots</id>
-            <url>http://repo.spring.io/snapshot</url>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/libs-milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-snapshots</id>
-            <url>http://repo.spring.io/snapshot</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-milestones</id>
-            <url>http://repo.spring.io/milestone</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
