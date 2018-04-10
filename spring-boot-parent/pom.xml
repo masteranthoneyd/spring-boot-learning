@@ -21,9 +21,16 @@
         <!-- 两者的区别在于 <maven.test.skip> 标签连 .class 文件都不会生成，而 <skipTests> 会编译生成 .class 文件-->
         <maven.test.skip>true</maven.test.skip>
 
+        <!-- ########## Docker 相关变量 ########## -->
         <!-- resource插件编译Dockerfile后的位置-->
         <dockerfile.compiled.position>${project.build.directory}/docker</dockerfile.compiled.position>
-        <docker.skip.build>false</docker.skip.build>
+        <!-- 是否跳过构建docker -->
+        <docker.skip.build>true</docker.skip.build>
+        <!-- 是否构建镜像 -->
+        <docker.push.image>false</docker.push.image>
+        <docker.registry.url>192.168.0.202:8080</docker.registry.url>
+        <docker.registry.name>dev-images</docker.registry.name>
+        <docker-latest-tag>latest</docker-latest-tag>
     </properties>
 
     <dependencies>
@@ -179,6 +186,17 @@
                                 <goal>build</goal>
                             </goals>
                         </execution>
+                        <execution>
+                            <id>push-image</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>push</goal>
+                            </goals>
+                            <configuration>
+                                <imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}:${docker-latest-tag}</imageName>
+                                <imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}:${project.version}</imageName>
+                            </configuration>
+                        </execution>
                     </executions>
                     <configuration>
                         <!--配置变量，包括是否build、imageName、imageTag，非常灵活-->
@@ -187,9 +205,13 @@
                         <forceTags>true</forceTags>
                         <imageTags>
                             <imageTag>${project.version}</imageTag>
-                            <imageTag>latest</imageTag>
+                            <imageTag>${docker-latest-tag}</imageTag>
                         </imageTags>
-                        <imageName>${project.artifactId}</imageName>
+                        <!--install阶段也上传，否则只有deploy阶段上传-->
+                        <pushImage>${docker.push.image}</pushImage>
+                        <!-- 配置镜像名称，遵循Docker的命名规范： springio/image -->
+                        <imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}</imageName>
+                        <!-- Dockerfile位置，由于配置了编译时动态获取Maven变量，真正的Dockerfile位于位于编译后位置 -->
                         <dockerDirectory>${dockerfile.compiled.position}</dockerDirectory>
                         <resources>
                             <resource>
@@ -198,6 +220,9 @@
                                 <include>${project.build.finalName}.jar</include>
                             </resource>
                         </resources>
+                        <!--push到私有的hub-->
+                        <serverId>docker-registry</serverId>
+                        <registryUrl>${docker.registry.url}</registryUrl>
                     </configuration>
                 </plugin>
             </plugins>

@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: docker-app
+
+#iba:
+#  kafka: kafka:9092

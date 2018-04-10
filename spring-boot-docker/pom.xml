@@ -19,6 +19,7 @@
     <properties>
         <!-- 是否跳过构建docker -->
         <docker.skip.build>false</docker.skip.build>
+        <docker.push.image>true</docker.push.image>
     </properties>
 
     <dependencies>

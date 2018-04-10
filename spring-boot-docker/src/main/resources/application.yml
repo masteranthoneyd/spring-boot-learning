@@ -1,3 +1,6 @@
 spring:
-  application:
-    name: docker-app
+  profiles:
+    active: dev
+
+iba:
+  kafka: 192.168.6.113:9092

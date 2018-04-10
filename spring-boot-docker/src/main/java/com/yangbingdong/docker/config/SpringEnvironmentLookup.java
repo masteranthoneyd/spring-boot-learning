@@ -11,7 +11,10 @@ import org.yaml.snakeyaml.Yaml;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 
+import static com.yangbingdong.springbootcommon.utils.StringUtil.isBlank;
 import static com.yangbingdong.springbootcommon.utils.StringUtil.isNotBlank;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
@@ -23,15 +26,31 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 @SuppressWarnings("unused")
 @Plugin(name = "spring", category = StrLookup.CATEGORY)
 public class SpringEnvironmentLookup extends AbstractLookup {
-	private LinkedHashMap ymlData;
-	private Map<String, String> map;
-	private static final String APPLICATION_YML_NAME = "application.yml";
+	private static LinkedHashMap profileYmlData;
+	private static LinkedHashMap metaYmlData;
+	private static boolean profileExist;
+	private static Map<String, String> map = new HashMap<>(16);
+	private static final String META_PROFILE = "application.yml";
+	private static final String PROFILE_PREFIX = "application";
+	private static final String PROFILE_SUFFIX = ".yml";
+	private static final String DEFAULT_PROFILE = "application-dev.yml";
 
-	public SpringEnvironmentLookup() {
-		super();
-		map = new HashMap<>(16);
+	static {
 		try {
-			ymlData = new Yaml().loadAs(new ClassPathResource(APPLICATION_YML_NAME).getInputStream(), LinkedHashMap.class);
+			metaYmlData = new Yaml().loadAs(new ClassPathResource(META_PROFILE).getInputStream(), LinkedHashMap.class);
+			Properties properties = System.getProperties();
+			String active = properties.getProperty("spring.profiles.active");
+			String configName;
+			if (isNotBlank(active)) {
+				configName = PROFILE_PREFIX + "-" + active + PROFILE_SUFFIX;
+			} else {
+				configName = DEFAULT_PROFILE;
+			}
+			ClassPathResource classPathResource = new ClassPathResource(configName);
+			profileExist = classPathResource.exists();
+			if (profileExist) {
+				profileYmlData = new Yaml().loadAs(classPathResource.getInputStream(), LinkedHashMap.class);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("SpringEnvironmentLookup initialize fail");
@@ -40,29 +59,42 @@ public class SpringEnvironmentLookup extends AbstractLookup {
 
 	@Override
 	public String lookup(LogEvent event, String key) {
-		return map.computeIfAbsent(key, this::resolveYmlMapByKey);
+		return map.computeIfAbsent(key, SpringEnvironmentLookup::resolveYmlMapByKey);
 	}
 
-	private String resolveYmlMapByKey(String key) {
+	private static String resolveYmlMapByKey(String key) {
 		Assert.isTrue(isNotBlank(key), "key can not be blank!");
 		String[] keyChain = key.split("\\.");
+		String value = null;
+		if (profileExist) {
+			value = getValueFromData(key, keyChain, profileYmlData);
+		}
+		if (isBlank(value)) {
+			value = getValueFromData(key, keyChain, metaYmlData);
+		}
+		return value;
+	}
+
+	private static String getValueFromData(String key, String[] keyChain, LinkedHashMap dataMap) {
 		int length = keyChain.length;
 		if (length == 1) {
-			return map.computeIfAbsent(key, s -> getFinalValue(s, ymlData));
+			return getFinalValue(key, dataMap);
 		}
 		String k;
 		LinkedHashMap[] mapChain = new LinkedHashMap[length];
-		mapChain[0] = ymlData;
+		mapChain[0] = dataMap;
 		for (int i = 0; i < length; i++) {
 			if (i == length - 1) {
-				int finalI = i;
-				return map.computeIfAbsent(key, s -> getFinalValue(keyChain[finalI], mapChain[finalI]));
+				return getFinalValue(keyChain[i], mapChain[i]);
 			}
 			k = keyChain[i];
 			Object o = mapChain[i].get(k);
+			if (Objects.isNull(o)) {
+				return "";
+			}
 			if (o instanceof LinkedHashMap) {
 				mapChain[i + 1] = (LinkedHashMap) o;
-			}else {
+			} else {
 				throw new IllegalArgumentException();
 			}
 		}

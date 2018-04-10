@@ -25,4 +25,8 @@ public class StringUtil {
 	public static boolean isNotBlank(String s) {
 		return StringUtils.isNotBlank(s);
 	}
+
+	public static boolean isBlank(String s) {
+		return StringUtils.isBlank(s);
+	}
 }

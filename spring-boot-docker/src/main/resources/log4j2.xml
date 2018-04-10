@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF" monitorInterval="30">
     <properties>
-        <Property name="Unknown" value="????"/>
+        <Property name="UNKNOWN" value="????"/>
+        <Property name="KAFKA_SERVERS" value="${spring:iba.kafka}"/>
         <Property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} | ${spring:spring.application.name} |%5p | IP:%X{IP} | %15.15t | %-50.50c{1.} | %5L | %M | %msg%n%xwEx"/>
     </properties>
 
@@ -14,7 +15,7 @@
         <Kafka name="kafka" topic="log-collect">
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
-            <Property name="bootstrap.servers">192.168.6.113:9092</Property>
+            <Property name="bootstrap.servers">${KAFKA_SERVERS}</Property>
         </Kafka>
     </Appenders>
 
