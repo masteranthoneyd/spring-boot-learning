@@ -30,8 +30,6 @@
         <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
         <snakeyaml.version>1.19</snakeyaml.version>
         <kafka-clients.version>1.1.0</kafka-clients.version>
-        <resources.plugin.version>3.0.2</resources.plugin.version>
-        <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
     </properties>
 
 

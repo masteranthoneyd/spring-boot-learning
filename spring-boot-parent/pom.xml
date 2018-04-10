@@ -22,6 +22,8 @@
         <maven.test.skip>true</maven.test.skip>
 
         <!-- ########## Docker 相关变量 ########## -->
+        <resources.plugin.version>3.0.2</resources.plugin.version>
+        <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
         <!-- resource插件编译Dockerfile后的位置-->
         <dockerfile.compiled.position>${project.build.directory}/docker</dockerfile.compiled.position>
         <!-- 是否跳过构建docker -->
@@ -180,12 +182,14 @@
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker-maven-plugin.version}</version>
                     <executions>
+                        <!-- 打包时构建镜像 -->
                         <execution>
                             <phase>package</phase>
                             <goals>
                                 <goal>build</goal>
                             </goals>
                         </execution>
+                        <!-- 部署时推送镜像到私有库 -->
                         <execution>
                             <id>push-image</id>
                             <phase>install</phase>
@@ -199,7 +203,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <!--配置变量，包括是否build、imageName、imageTag，非常灵活-->
+                        <!-- 是否构建镜像 -->
                         <skipDocker>${docker.skip.build}</skipDocker>
                         <!--最后镜像产生了两个tag，版本和和最新的-->
                         <forceTags>true</forceTags>
