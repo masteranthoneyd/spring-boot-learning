@@ -42,7 +42,7 @@ public class SpringEnvironmentLookup extends AbstractLookup {
 			Properties properties = System.getProperties();
 			String active = properties.getProperty(SPRING_PROFILES_ACTIVE);
 			if (isBlank(active)) {
-				active = getValueFromData(SPRING_PROFILES_ACTIVE, SPRING_PROFILES_ACTIVE.split("\\."), metaYmlData);
+				active = getValueFromData(SPRING_PROFILES_ACTIVE, metaYmlData);
 			}
 			String configName = isNotBlank(active) ? PROFILE_PREFIX + "-" + active + PROFILE_SUFFIX : DEFAULT_PROFILE;
 			ClassPathResource classPathResource = new ClassPathResource(configName);
@@ -66,15 +66,16 @@ public class SpringEnvironmentLookup extends AbstractLookup {
 		String[] keyChain = key.split("\\.");
 		String value = null;
 		if (profileExist) {
-			value = getValueFromData(key, keyChain, profileYmlData);
+			value = getValueFromData(key, profileYmlData);
 		}
 		if (isBlank(value)) {
-			value = getValueFromData(key, keyChain, metaYmlData);
+			value = getValueFromData(key, metaYmlData);
 		}
 		return value;
 	}
 
-	private static String getValueFromData(String key, String[] keyChain, LinkedHashMap dataMap) {
+	private static String getValueFromData(String key, LinkedHashMap dataMap) {
+		String[] keyChain = key.split("\\.");
 		int length = keyChain.length;
 		if (length == 1) {
 			return getFinalValue(key, dataMap);
