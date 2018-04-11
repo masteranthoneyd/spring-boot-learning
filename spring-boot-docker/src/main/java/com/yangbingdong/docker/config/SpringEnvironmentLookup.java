@@ -34,18 +34,17 @@ public class SpringEnvironmentLookup extends AbstractLookup {
 	private static final String PROFILE_PREFIX = "application";
 	private static final String PROFILE_SUFFIX = ".yml";
 	private static final String DEFAULT_PROFILE = "application-dev.yml";
+	private static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
 
 	static {
 		try {
 			metaYmlData = new Yaml().loadAs(new ClassPathResource(META_PROFILE).getInputStream(), LinkedHashMap.class);
 			Properties properties = System.getProperties();
-			String active = properties.getProperty("spring.profiles.active");
-			String configName;
-			if (isNotBlank(active)) {
-				configName = PROFILE_PREFIX + "-" + active + PROFILE_SUFFIX;
-			} else {
-				configName = DEFAULT_PROFILE;
+			String active = properties.getProperty(SPRING_PROFILES_ACTIVE);
+			if (isBlank(active)) {
+				active = getValueFromData(SPRING_PROFILES_ACTIVE, SPRING_PROFILES_ACTIVE.split("\\."), metaYmlData);
 			}
+			String configName = isNotBlank(active) ? PROFILE_PREFIX + "-" + active + PROFILE_SUFFIX : DEFAULT_PROFILE;
 			ClassPathResource classPathResource = new ClassPathResource(configName);
 			profileExist = classPathResource.exists();
 			if (profileExist) {
