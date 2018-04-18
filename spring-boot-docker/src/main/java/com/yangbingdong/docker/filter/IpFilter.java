@@ -25,9 +25,4 @@ public class IpFilter extends OncePerRequestFilter {
 			MDC.clear();
 		}
 	}
-
-	@Override
-	public void destroy() {
-
-	}
 }
