@@ -18,8 +18,12 @@ import java.io.IOException;
 public class IpFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		MDC.put("IP", IpUtil.getIpAddr(request));
-		filterChain.doFilter(request, response);
+		try {
+			MDC.put("IP", IpUtil.getIpAddr(request));
+			filterChain.doFilter(request, response);
+		} finally {
+			MDC.clear();
+		}
 	}
 
 	@Override
