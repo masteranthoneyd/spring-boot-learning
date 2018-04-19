@@ -1,8 +1,8 @@
-package com.yangbingdong.springbootasyncandschedule.config;
+package com.yangbingdong.springboot.common.config;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -16,24 +16,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 18-2-18.
  * @contact yangbingdong1994@gmail.com
  */
+@ConditionalOnMissingBean(AsyncConfigurer.class)
 @Configuration
 @EnableAsync
 public class SpringAsyncConfig implements AsyncConfigurer {
-
-	@Bean
-	public Executor threadPoolTaskExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(10);
-		executor.setMaxPoolSize(20);
-		executor.setQueueCapacity(500);
-		executor.setKeepAliveSeconds(60);
-		executor.setThreadNamePrefix("asyncExecutor-");
-		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-		executor.setWaitForTasksToCompleteOnShutdown(true);
-		executor.setAwaitTerminationSeconds(60);
-		executor.initialize();
-		return executor;
-	}
 
 	@Override
 	public Executor getAsyncExecutor() {
@@ -41,7 +27,7 @@ public class SpringAsyncConfig implements AsyncConfigurer {
 		executor.setCorePoolSize(8);
 		executor.setMaxPoolSize(42);
 		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("MyExecutor-");
+		executor.setThreadNamePrefix("asyncExecutor-");
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		executor.setWaitForTasksToCompleteOnShutdown(true);
 		executor.setAwaitTerminationSeconds(60);

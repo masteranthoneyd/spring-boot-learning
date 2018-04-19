@@ -1,6 +1,7 @@
-package com.yangbingdong.docker.config;
+package com.yangbingdong.springboot.common.config;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -15,11 +16,11 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * @date 18-2-18.
  * @contact yangbingdong1994@gmail.com
  */
+@ConditionalOnMissingBean(SchedulingConfigurer.class)
 @Configuration
 @EnableScheduling
 public class SpringScheduleConfig implements SchedulingConfigurer {
 
-	@SuppressWarnings("NullableProblems")
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 		taskRegistrar.setScheduler(taskExecutor());
@@ -27,11 +28,10 @@ public class SpringScheduleConfig implements SchedulingConfigurer {
 
 	@Bean
 	public Executor taskExecutor() {
-		return new ScheduledThreadPoolExecutor(4,
+		return new ScheduledThreadPoolExecutor(10,
 				new BasicThreadFactory
 						.Builder()
-						.namingPattern("schedule-thread-%d")
-						.daemon(true)
+						.namingPattern("schedule-%d")
 						.build());
 	}
 

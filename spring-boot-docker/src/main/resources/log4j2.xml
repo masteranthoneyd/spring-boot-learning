@@ -3,7 +3,7 @@
     <properties>
         <Property name="UNKNOWN" value="????"/>
         <Property name="KAFKA_SERVERS" value="${spring:iba.kafka}"/>
-        <Property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} | ${spring:spring.application.name} |%5p | IP:%X{IP} | %15.15t | %-50.50c{1.} | %5L | %M | %msg%n%xwEx"/>
+        <Property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} | ${spring:spring.application.name} | %5p | IP:%X{IP} | %15.15t | %-50.50c{1.} | %5L | %M | %msg%n%xwEx"/>
     </properties>
 
     <Appenders>

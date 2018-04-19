@@ -1,4 +1,4 @@
-package com.yangbingdong.docker.config.shutdown;
+package com.yangbingdong.springboot.common.config.shutdown;
 
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;

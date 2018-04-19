@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.yangbingdong.springboot.common.config.SpringScheduleConfig,\
+  com.yangbingdong.springboot.common.config.shutdown.GracefulShutdownConfiguration,\
+  com.yangbingdong.springboot.common.config.SpringAsyncConfig
