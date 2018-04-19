@@ -30,7 +30,9 @@
         <docker.skip.build>true</docker.skip.build>
         <!-- 是否构建镜像 -->
         <docker.push.image>false</docker.push.image>
+        <!-- Docker私服地址 -->
         <docker.registry.url>192.168.0.202:8080</docker.registry.url>
+        <!-- 镜像库名称 -->
         <docker.registry.name>dev-images</docker.registry.name>
         <docker-latest-tag>latest</docker-latest-tag>
     </properties>
@@ -113,9 +115,16 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- 各种JSON支持 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <!-- Spring切面支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <!-- Lombok简洁代码插件 -->

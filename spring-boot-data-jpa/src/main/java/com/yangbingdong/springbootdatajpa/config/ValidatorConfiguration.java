@@ -16,10 +16,10 @@ import javax.validation.ValidatorFactory;
 @Configuration
 public class ValidatorConfiguration {
 	@Bean
-	public Validator validator(){
-		ValidatorFactory validatorFactory = Validation.byProvider( HibernateValidator.class )
+	public Validator validator() {
+		ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
 													  .configure()
-													  .failFast( true )
+													  .failFast(true)
 //													  .addProperty( "hibernate.validator.fail_fast", "true" )
 													  .buildValidatorFactory();
 		return validatorFactory.getValidator();
