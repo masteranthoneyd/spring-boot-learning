@@ -18,7 +18,7 @@
 
     <properties>
         <!-- 是否跳过构建docker -->
-        <docker.skip.build>false</docker.skip.build>
+        <docker.skip.build>true</docker.skip.build>
         <docker.push.image>true</docker.push.image>
     </properties>
 
@@ -28,10 +28,6 @@
             <artifactId>kafka-clients</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

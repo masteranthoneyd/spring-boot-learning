@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.LongStream;
 
-import static com.yangbingdong.springbootcommon.utils.function.Trier.tryLongConsumer;
+import static com.yangbingdong.springboot.common.utils.function.Trier.tryLongConsumer;
 
 /**
  * @author ybd

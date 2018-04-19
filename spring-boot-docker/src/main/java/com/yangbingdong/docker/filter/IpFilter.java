@@ -1,6 +1,6 @@
 package com.yangbingdong.docker.filter;
 
-import com.yangbingdong.springbootcommon.utils.IpUtil;
+import com.yangbingdong.springboot.common.utils.IpUtil;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 

@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import static com.yangbingdong.springbootcommon.utils.StringUtil.isBlank;
-import static com.yangbingdong.springbootcommon.utils.StringUtil.isNotBlank;
+import static com.yangbingdong.springboot.common.utils.StringUtil.isBlank;
+import static com.yangbingdong.springboot.common.utils.StringUtil.isNotBlank;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
@@ -23,17 +23,16 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
  * @date 18-4-9
  * @contact yangbingdong1994@gmail.com
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Duplicates"})
 @Plugin(name = "spring", category = StrLookup.CATEGORY)
 public class SpringEnvironmentLookup extends AbstractLookup {
 	private static LinkedHashMap profileYmlData;
 	private static LinkedHashMap metaYmlData;
 	private static boolean profileExist;
 	private static Map<String, String> map = new HashMap<>(16);
-	private static final String META_PROFILE = "application.yml";
 	private static final String PROFILE_PREFIX = "application";
 	private static final String PROFILE_SUFFIX = ".yml";
-	private static final String DEFAULT_PROFILE = "application-dev.yml";
+	private static final String META_PROFILE = PROFILE_PREFIX + PROFILE_SUFFIX;
 	private static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
 
 	static {
@@ -44,11 +43,13 @@ public class SpringEnvironmentLookup extends AbstractLookup {
 			if (isBlank(active)) {
 				active = getValueFromData(SPRING_PROFILES_ACTIVE, metaYmlData);
 			}
-			String configName = isNotBlank(active) ? PROFILE_PREFIX + "-" + active + PROFILE_SUFFIX : DEFAULT_PROFILE;
-			ClassPathResource classPathResource = new ClassPathResource(configName);
-			profileExist = classPathResource.exists();
-			if (profileExist) {
-				profileYmlData = new Yaml().loadAs(classPathResource.getInputStream(), LinkedHashMap.class);
+			if (isNotBlank(active)) {
+				String configName = PROFILE_PREFIX + "-" + active + PROFILE_SUFFIX;
+				ClassPathResource classPathResource = new ClassPathResource(configName);
+				profileExist = classPathResource.exists();
+				if (profileExist) {
+					profileYmlData = new Yaml().loadAs(classPathResource.getInputStream(), LinkedHashMap.class);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

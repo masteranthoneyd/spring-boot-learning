@@ -140,6 +140,12 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!-- YAML文件解析 -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
