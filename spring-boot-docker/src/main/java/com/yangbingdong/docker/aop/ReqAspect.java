@@ -2,6 +2,9 @@ package com.yangbingdong.docker.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
+import com.yangbingdong.docker.domain.core.vo.ReqResult;
+import com.yangbingdong.docker.domain.repository.AccessLogRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -10,11 +13,11 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -23,9 +26,14 @@ import java.util.Date;
  * @contact yangbingdong1994@gmail.com
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 @Aspect
 public class ReqAspect {
+	private final AccessLogRepository accessLogRepository;
+
+	@Value("${spring.application.name:}")
+	private String serverName;
 
 	private ThreadLocal<AccessLog> logThreadLocal = new ThreadLocal<>();
 
@@ -43,23 +51,17 @@ public class ReqAspect {
 
 	@Before("webLog() && @annotation(reqLog)")
 	public void doBeforeAdvice(JoinPoint joinPoint, ReqLog reqLog) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		Signature signature = joinPoint.getSignature();
 		long currentTimeMillis = System.currentTimeMillis();
 		Date currentDate = new Date(currentTimeMillis);
 
 		AccessLog accessLog = new AccessLog();
 		accessLog.setClassMethod(signature.getDeclaringTypeName() + "#" + signature.getName())
+				 .setServerName(serverName)
 				 .setReqTime(currentDate)
-				 .setStartTime(currentTimeMillis);
+				 .setStartTime(currentTimeMillis)
+				 .setReqReceiveData(JSON.toJSONString(joinPoint.getArgs()));
 		logThreadLocal.set(accessLog);
-
-		/*log.info("URL : " + request.getRequestURL().toString());
-		log.info("HTTP_METHOD : " + request.getMethod());
-		log.info("IP : " + request.getRemoteAddr());
-		log.info("CLASS_METHOD : " + signature.getDeclaringTypeName() + "#" + signature.getName());
-		log.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
-		log.info("LOG_VALUE : {}", reqLog.value());*/
 	}
 
 	/**
@@ -70,12 +72,18 @@ public class ReqAspect {
 	 */
 	@AfterReturning(value = "webLog()", returning = "respData")
 	public void doAfterReturningAdvice(Object respData) {
-		AccessLog accessLog = logThreadLocal.get();
-		long endTime = System.currentTimeMillis();
-		accessLog.setEndTime(endTime)
-				 .setTimeConsuming(endTime - accessLog.getStartTime())
-				 .setRespData(JSON.toJSONString(respData));
-		log.info("{}", accessLog);
+		try{
+			AccessLog accessLog = logThreadLocal.get();
+			long endTime = System.currentTimeMillis();
+			accessLog.setEndTime(endTime)
+					 .setTimeConsuming(endTime - accessLog.getStartTime())
+					 .setRespData(JSON.toJSONString(respData))
+					 .setReqResult(ReqResult.SUCCESS);
+			log.info("{}", accessLog);
+			doFinally(accessLog);
+		}finally {
+			logThreadLocal.remove();
+		}
 	}
 
 	/**
@@ -85,11 +93,24 @@ public class ReqAspect {
 	 */
 	@AfterThrowing(value = "webLog()",throwing = "exception")
 	public void doAfterThrowingAdvice(Throwable exception){
-		AccessLog accessLog = logThreadLocal.get();
-		long endTime = System.currentTimeMillis();
-		accessLog.setEndTime(endTime)
-				 .setTimeConsuming(endTime - accessLog.getStartTime())
-				 .setExceptionMessage(exception.getMessage());
+		try{
+			AccessLog accessLog = logThreadLocal.get();
+			long endTime = System.currentTimeMillis();
+			accessLog.setEndTime(endTime)
+					 .setTimeConsuming(endTime - accessLog.getStartTime())
+					 .setExceptionMessage(exception.getMessage())
+					 .setReqResult(ReqResult.FAIL);
+			doFinally(accessLog);
+		}finally {
+			logThreadLocal.remove();
+		}
+
+	}
+
+	private void doFinally(AccessLog accessLog) {
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		accessLog = accessLog.parseReqData(requestAttributes);
+		accessLogRepository.save(accessLog);
 	}
 
 }

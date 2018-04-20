@@ -2,13 +2,14 @@ package com.yangbingdong.docker.domain.core.root;
 
 import com.yangbingdong.docker.domain.core.vo.ReqResult;
 import com.yangbingdong.docker.pubsub.application.event.PersistAccessLogEvent;
+import com.yangbingdong.springboot.common.utils.IpUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.data.domain.DomainEvents;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,13 +20,17 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
 import static javax.persistence.EnumType.STRING;
 
 /**
@@ -56,9 +61,9 @@ public class AccessLog implements Serializable {
 	private String clientIp;
 
 	/**
-	 * 接收请求的服务器Ip
+	 * 服务名
 	 */
-	private String serverIp;
+	private String serverName;
 
 	/**
 	 * 请求URI
@@ -94,7 +99,6 @@ public class AccessLog implements Serializable {
 	 * 接受到请求的时间
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
-	@CreationTimestamp
 	private Date reqTime;
 
 	/**
@@ -148,5 +152,19 @@ public class AccessLog implements Serializable {
 	public void callbackMethod() {
 		log.info("AfterDomainEventPublication..........");
 		domainEvents.clear();
+	}
+
+	public AccessLog parseReqData(ServletRequestAttributes requestAttributes) {
+		HttpServletRequest request = requestAttributes.getRequest();
+		HttpServletResponse response = requestAttributes.getResponse();
+		requireNonNull(request);
+		requireNonNull(response);
+		this.setClientIp((String) request.getAttribute(AccessLog.IP))
+			.setUri(request.getRequestURL().toString())
+			.setReqType(IpUtil.getRequestType(request))
+			.setReqMethod(request.getMethod())
+			.setToken(UUID.randomUUID().toString())
+			.setHttpStatusCode(response.getStatus() + "");
+		return this;
 	}
 }
