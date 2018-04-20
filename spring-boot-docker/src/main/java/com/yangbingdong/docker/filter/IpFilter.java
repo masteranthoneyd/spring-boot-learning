@@ -1,5 +1,6 @@
 package com.yangbingdong.docker.filter;
 
+import com.yangbingdong.docker.domain.core.root.AccessLog;
 import com.yangbingdong.springboot.common.utils.IpUtil;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,7 +20,9 @@ public class IpFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		try {
-			MDC.put("IP", IpUtil.getIpAddr(request));
+			String ipAddr = IpUtil.realIp(request);
+			MDC.put("IP", ipAddr);
+			request.setAttribute(AccessLog.IP, ipAddr);
 			filterChain.doFilter(request, response);
 		} finally {
 			MDC.clear();

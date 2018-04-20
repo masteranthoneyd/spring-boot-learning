@@ -1,5 +1,6 @@
-package com.yangbingdong.docker.controller;
+package com.yangbingdong.docker.controller.c1;
 
+import com.yangbingdong.docker.aop.ReqLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class HelloController {
 
+	@ReqLog("这是Hello")
 	@GetMapping("/hello")
 	public String helloV1() {
 		log.info("hello hello hello");

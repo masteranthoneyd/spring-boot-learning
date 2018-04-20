@@ -2,5 +2,37 @@ spring:
   profiles:
     active: dev
 
+  datasource:
+    url: jdbc:h2:mem:test # 使用内存存储
+#    url: jdbc:h2:file:~/test # 使用物理盘存储
+    username: sa
+    password:
+#    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 13 #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+  # 开启控制台
+  h2:
+    console:
+      # 开启控制台，默认为 /h2-console
+      enabled: true
+      path: /console
+      settings:
+        web-allow-others: true
+
+  ###### JPA配置【开始】 ######
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create # create、create-drop、update、validate、none
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQL5InnoDBDialect  # 方言设置，默认为： MySQL5Dialect
+  ###### JPA配置【结束】 ######
+
+
+  jackson:
+    default-property-inclusion: non_null
+    date-format: "yyyy-MM-dd HH:mm:ss"
 iba:
   kafka: 192.168.6.113:9092

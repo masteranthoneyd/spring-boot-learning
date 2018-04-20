@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 优雅停机配置类，通过注册{@link WebServerFactoryCustomizer}自定义关机动作
+ *
  * @author ybd
  * @date 18-4-19
  * @contact yangbingdong1994@gmail.com

@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootdatajpa.util;
+package com.yangbingdong.springboot.common.utils;
 
 
 /**
