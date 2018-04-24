@@ -8,6 +8,7 @@ import com.yangbingdong.springboot.common.utils.IpUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -210,10 +211,9 @@ public class AccessLog implements Serializable {
 			if (isJavaxServlet(paramValues[i])) {
 				continue;
 			}
-			final Object paramValue = paramValues[i];
 			tempReqReceiveDatas.add(new ReqReceiveData().setName(paramNames[i])
 														.setType(paramTypes[i].getSimpleName())
-														.setValue(paramValue));
+														.setValue(ObjectUtils.clone(paramValues[i])));
 		}
 		this.setReqReceiveDatas(tempReqReceiveDatas);
 	}
