@@ -15,7 +15,7 @@ spring:
     console:
       # 开启控制台，默认为 /h2-console
       enabled: true
-      path: /console
+#      path: /console
       settings:
         web-allow-others: true
 

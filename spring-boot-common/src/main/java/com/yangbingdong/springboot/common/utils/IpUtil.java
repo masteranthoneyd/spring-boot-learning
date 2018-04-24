@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.yangbingdong.springboot.common.utils.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
  * @author ybd
@@ -78,7 +79,7 @@ public class IpUtil {
 	 * 判断是否为ajax请求
 	 */
 	public static String getRequestType(HttpServletRequest request) {
-		return request.getHeader("X-Requested-With");
+		return defaultIfNull(request.getHeader("X-Requested-With"), "");
 	}
 
 	/**
