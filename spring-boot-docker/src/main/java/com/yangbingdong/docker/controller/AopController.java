@@ -2,6 +2,8 @@ package com.yangbingdong.docker.controller;
 
 import com.yangbingdong.docker.aop.ReqLog;
 import com.yangbingdong.docker.controller.webvo.UserVo;
+import com.yangbingdong.docker.domain.core.root.AccessLog;
+import com.yangbingdong.docker.domain.repository.AccessLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/aop")
 public class AopController {
 
+	private final AccessLogRepository accessLogRepository;
+
 	/**
 	 * http://192.168.6.113:8080/aop/1/bbb?name=ybd&age=24
 	 */
@@ -37,5 +41,10 @@ public class AopController {
 		log.info("aop controller 2 receive: {}", arg);
 //		throw new IllegalArgumentException("this is a mock exception!");
 		return "arg";
+	}
+
+	@GetMapping("/{id}")
+	public AccessLog getById(@PathVariable("id") Long id) {
+		return accessLogRepository.findById(id).orElse(null);
 	}
 }

@@ -6,8 +6,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author ybd
  * @date 18-4-20
@@ -19,7 +17,8 @@ public class DomainEventListener {
 	@Async
 	@TransactionalEventListener(PersistAccessLogEvent.class)
 	public void processSaveMsgEvent(PersistAccessLogEvent persistAccessLogEvent) throws InterruptedException {
-		TimeUnit.MILLISECONDS.sleep(1000);
-		log.info("Listening PersistAccessLogEvent: {}", persistAccessLogEvent);
+//		TimeUnit.MILLISECONDS.sleep(1000);
+//		log.info("Listening PersistAccessLogEvent: {}", persistAccessLogEvent);
+		log.info("Listening PersistAccessLogEvent");
 	}
 }

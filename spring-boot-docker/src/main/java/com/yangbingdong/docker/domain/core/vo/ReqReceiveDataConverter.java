@@ -1,9 +1,10 @@
 package com.yangbingdong.docker.domain.core.vo;
 
-import com.alibaba.fastjson.JSONArray;
-
 import javax.persistence.AttributeConverter;
 import java.util.List;
+
+import static com.alibaba.fastjson.JSON.parseArray;
+import static com.alibaba.fastjson.JSON.toJSONString;
 
 /**
  * @author ybd
@@ -13,11 +14,11 @@ import java.util.List;
 public class ReqReceiveDataConverter implements AttributeConverter<List<ReqReceiveData>, String> {
 	@Override
 	public String convertToDatabaseColumn(List<ReqReceiveData> attribute) {
-		return JSONArray.toJSONString(attribute);
+		return toJSONString(attribute);
 	}
 
 	@Override
 	public List<ReqReceiveData> convertToEntityAttribute(String dbData) {
-		return JSONArray.parseArray(dbData, ReqReceiveData.class);
+		return parseArray(dbData, ReqReceiveData.class);
 	}
 }

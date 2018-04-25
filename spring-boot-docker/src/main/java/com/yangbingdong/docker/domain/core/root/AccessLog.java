@@ -8,7 +8,6 @@ import com.yangbingdong.springboot.common.utils.IpUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -75,6 +74,7 @@ public class AccessLog implements Serializable {
 	/**
 	 * 服务名
 	 */
+	@Column(length = 50)
 	private String serverName;
 
 	/**
@@ -213,7 +213,7 @@ public class AccessLog implements Serializable {
 			}
 			tempReqReceiveDatas.add(new ReqReceiveData().setName(paramNames[i])
 														.setType(paramTypes[i].getSimpleName())
-														.setValue(ObjectUtils.clone(paramValues[i])));
+														.setJsonValue(paramValues[i]));
 		}
 		this.setReqReceiveDatas(tempReqReceiveDatas);
 	}
