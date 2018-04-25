@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 /**
  * @author ybd
@@ -39,8 +40,22 @@ public class AopController {
 	@GetMapping("/2/{arg}")
 	public String aop2(@PathVariable("arg") String arg) {
 		log.info("aop controller 2 receive: {}", arg);
-//		throw new IllegalArgumentException("this is a mock exception!");
-		return "arg";
+		throw new IllegalArgumentException("{\"respBody\":{\"showTime\":5,\"advert\":[{\"pic\":\"\",\"type\":1},{\"pic\":\"\",\"type\":0}]},\"respHeader\":{\"resultCode\":0,\"message\":\"正确执行\"}}");
+//		return "arg";
+	}
+
+	@ReqLog("这是aop3")
+	@GetMapping("/3/{arg}")
+	public UserVo aop3(@PathVariable("arg") String arg, @ModelAttribute("userVo") UserVo userVo) {
+		int i = 1 / 0;
+		log.info("aop controller 1 receive: {}", arg);
+		return userVo;
+	}
+
+	@ReqLog("这是aop4")
+	@GetMapping("/4/{arg}")
+	public UserVo aop4(@PathVariable("arg") String arg) {
+		throw new AsyncRequestTimeoutException();
 	}
 
 	@GetMapping("/{id}")
