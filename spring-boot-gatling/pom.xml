@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
+    <!--<parent>
         <groupId>com.yangbingdong</groupId>
         <artifactId>spring-boot-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../spring-boot-parent/pom.xml</relativePath>
-    </parent>
+    </parent>-->
 
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>com.yangbingdong</groupId>
     <artifactId>spring-boot-gatling</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -24,30 +24,18 @@
     </properties>
 
     <dependencies>
-        <!-- 默认使用 HikariCP 连接池  -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- 性能测试 Gatling -->
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
             <version>${gatling-charts-highcharts.version}</version>
             <!-- 由于配置了log4j2，运行Gatling时需要**注释**以下的 exclusions，否则会抛异常，但貌似不影响测试结果 -->
-            <exclusions>
+            <!--<exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
                     <artifactId>logback-classic</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
     </dependencies>
 
@@ -60,7 +48,7 @@
                 <version>${gatling-plugin.version}</version>
                 <configuration>
                     <!-- 测试脚本 -->
-                    <simulationClass>com.yangbingdong.springbootgatling.gatling.ApiGatlingSimulationTest</simulationClass>
+                    <simulationClass>com.yangbingdong.springbootgatling.gatling.DockerTest</simulationClass>
                     <!-- 结果输出地址 -->
                     <resultsFolder>/home/ybd/test/gatling</resultsFolder>
                 </configuration>

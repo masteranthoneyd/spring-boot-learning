@@ -12,6 +12,8 @@ import java.io.Serializable;
  * @date 18-3-1
  * @contact yangbingdong1994@gmail.com
  */
+
+@SuppressWarnings("unused")
 public class SnowflakeIdentifierGenerator implements IdentifierGenerator {
 	private SnowflakeSequencer snowflakeSequencer = SnowflakeSequencer.INSTANCE;
 

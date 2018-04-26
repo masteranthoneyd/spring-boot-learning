@@ -68,7 +68,6 @@ public class AccessLog implements Serializable {
 	/**
 	 * 客户请求时Ip
 	 */
-	@Column(nullable = false)
 	private String clientIp;
 
 	/**
