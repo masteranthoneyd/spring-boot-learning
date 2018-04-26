@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 public class AopLogDisruptorLauncher implements InitializingBean, ApplicationListener<ContextClosedEvent>,
-		DisruptorLauncher<AccessLog>{
+		DisruptorLauncher<AccessLog> {
 	private final AopLogEventFactory eventFactory;
 	private final AopLogTranslator translator;
 	private final DisruptorExceptionHandler exceptionHandler;
