@@ -3,7 +3,7 @@ package com.yangbingdong.docker.aop;
 import com.alibaba.fastjson.JSON;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
 import com.yangbingdong.docker.domain.core.vo.ReqResult;
-import com.yangbingdong.docker.domain.repository.AccessLogRepository;
+import com.yangbingdong.docker.pubsub.disruptor.DisruptorLauncher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -29,7 +29,7 @@ import java.util.Date;
 @Component
 @Aspect
 public class ReqAspect {
-	private final AccessLogRepository accessLogRepository;
+	private final DisruptorLauncher<AccessLog> disruptorLauncher;
 
 	@Value("${spring.application.name:}")
 	private String serverName;
@@ -72,7 +72,7 @@ public class ReqAspect {
 			accessLog.setEndTime(System.currentTimeMillis())
 					 .setRespData(JSON.toJSONString(respData))
 					 .setReqResult(ReqResult.SUCCESS);
-			doFinally(accessLog);
+			sentAccessLogEvent(accessLog);
 		} finally {
 			logThreadLocal.remove();
 		}
@@ -90,18 +90,17 @@ public class ReqAspect {
 			accessLog.setEndTime(System.currentTimeMillis())
 					 .setExceptionMessage(exception.getMessage())
 					 .setReqResult(ReqResult.FAIL);
-			doFinally(accessLog);
+			sentAccessLogEvent(accessLog);
 		} finally {
 			logThreadLocal.remove();
 		}
 
 	}
 
-	private void doFinally(AccessLog accessLog) {
+	private void sentAccessLogEvent(AccessLog accessLog) {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		accessLog = accessLog.setRequestAttributes(requestAttributes)
-							 .parseAndFillReqData();
-		accessLogRepository.save(accessLog);
+		accessLog.setRequestAttributes(requestAttributes);
+		disruptorLauncher.launch(accessLog);
 	}
 
 }
