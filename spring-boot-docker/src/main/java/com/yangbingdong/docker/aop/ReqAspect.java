@@ -18,6 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author ybd
@@ -29,6 +30,7 @@ import java.util.Date;
 @Component
 @Aspect
 public class ReqAspect {
+	public static final AtomicInteger AOP_ATOMIC_INTEGER = new AtomicInteger(0);
 	private final DisruptorLauncher<AccessLog> disruptorLauncher;
 
 	@Value("${spring.application.name:}")
@@ -50,6 +52,7 @@ public class ReqAspect {
 
 	@Before("webLog() && @annotation(reqLog)")
 	public void doBeforeAdvice(JoinPoint joinPoint, ReqLog reqLog) {
+		AOP_ATOMIC_INTEGER.incrementAndGet();
 		long currentTimeMillis = System.currentTimeMillis();
 		Date currentDate = new Date(currentTimeMillis);
 		AccessLog accessLog = new AccessLog().setJoinPoint(joinPoint)

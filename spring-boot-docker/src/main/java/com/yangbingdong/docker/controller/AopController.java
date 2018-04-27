@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author ybd
  * @date 18-4-20
@@ -23,6 +25,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 @Slf4j
 @RequestMapping("/aop")
 public class AopController {
+	public static final AtomicInteger C_ATOMIC_INTEGER = new AtomicInteger(0);
 
 	private final AccessLogRepository accessLogRepository;
 
@@ -32,7 +35,8 @@ public class AopController {
 	@ReqLog("这是aop1")
 	@GetMapping("/1/{arg}")
 	public UserVo aop1(@PathVariable("arg") String arg, @ModelAttribute("userVo") UserVo userVo) {
-		log.info("aop controller 1 receive: {}", arg);
+//		log.info("aop controller 1 receive: {}", arg);
+		C_ATOMIC_INTEGER.incrementAndGet();
 		return userVo;
 	}
 

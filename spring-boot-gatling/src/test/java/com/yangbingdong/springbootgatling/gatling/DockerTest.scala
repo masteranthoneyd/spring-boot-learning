@@ -7,13 +7,13 @@ import io.gatling.core.scenario.Simulation
 import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
 
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
 class DockerTest extends Simulation {
 
   private val builder = http("DockerTest").get("http://192.168.6.113:8080/aop/1/bbb?name=ybd&age=24").check(status.is(200))
 
-  val scn: ScenarioBuilder = scenario("DockerTest").repeat(100) {exec(builder)}
+  val scn: ScenarioBuilder = scenario("DockerTest").repeat(500) {exec(builder).pause(Duration.apply(5, TimeUnit.MILLISECONDS))}
 
   val scn2: ScenarioBuilder = scenario("DockerTest").exec(builder)
 
