@@ -28,7 +28,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.yangbingdong.springboot.common.utils.StringUtil.lowercaseInitial;
 import static java.util.Collections.singletonList;
@@ -45,7 +44,6 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class AopLogDisruptorLauncher implements InitializingBean, ApplicationListener<ContextClosedEvent>,
 		DisruptorLauncher<AccessLog> {
-	public static final AtomicInteger P_ATOMIC_INTEGER = new AtomicInteger(0);
 	private final AopLogEventFactory eventFactory;
 	private final AopLogTranslator translator;
 	private final DisruptorExceptionHandler exceptionHandler;
@@ -131,7 +129,6 @@ public class AopLogDisruptorLauncher implements InitializingBean, ApplicationLis
 
 	@Override
 	public void launch(AccessLog accessLog) {
-		P_ATOMIC_INTEGER.incrementAndGet();
 		ringBuffer.publishEvent(translator, accessLog);
 	}
 }
