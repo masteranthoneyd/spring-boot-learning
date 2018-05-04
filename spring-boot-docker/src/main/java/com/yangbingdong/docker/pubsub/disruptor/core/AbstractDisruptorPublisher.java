@@ -144,25 +144,6 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 		this.waitStrategy = waitStrategy;
 	}
 
-
-	private static class DefaultExceptionHandler<E> implements ExceptionHandler<E> {
-
-		@Override
-		public void handleEventException(Throwable ex, long sequence, E event) {
-			log.error(event.getClass().getSimpleName() + " handler error", ex);
-		}
-
-		@Override
-		public void handleOnStartException(Throwable ex) {
-			log.error("handler start error", ex);
-		}
-
-		@Override
-		public void handleOnShutdownException(Throwable ex) {
-			log.error("handler shutdown error", ex);
-		}
-	}
-
 	protected abstract EventFactory<E> provideEventFactory();
 
 	protected abstract List<DisruptorEventHandler<E>> provideDisruptorEventHandlers();

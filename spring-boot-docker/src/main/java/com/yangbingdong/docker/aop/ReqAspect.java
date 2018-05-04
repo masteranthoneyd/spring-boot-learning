@@ -3,7 +3,7 @@ package com.yangbingdong.docker.aop;
 import com.alibaba.fastjson.JSON;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
 import com.yangbingdong.docker.domain.core.vo.ReqResult;
-import com.yangbingdong.docker.pubsub.disruptor.DisruptorLauncher;
+import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -18,7 +18,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author ybd
@@ -30,8 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 @Aspect
 public class ReqAspect {
-	public static final AtomicInteger AOP_ATOMIC_INTEGER = new AtomicInteger(0);
-	private final DisruptorLauncher<AccessLog> disruptorLauncher;
+	private final DisruptorPublisher<AccessLog> publisher;
 
 	@Value("${spring.application.name:}")
 	private String serverName;
@@ -52,7 +50,6 @@ public class ReqAspect {
 
 	@Before("webLog() && @annotation(reqLog)")
 	public void doBeforeAdvice(JoinPoint joinPoint, ReqLog reqLog) {
-		AOP_ATOMIC_INTEGER.incrementAndGet();
 		long currentTimeMillis = System.currentTimeMillis();
 		Date currentDate = new Date(currentTimeMillis);
 		AccessLog accessLog = new AccessLog().setJoinPoint(joinPoint)
@@ -103,7 +100,7 @@ public class ReqAspect {
 	private void sentAccessLogEvent(AccessLog accessLog) {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		accessLog.setRequestAttributes(requestAttributes);
-		disruptorLauncher.launch(accessLog);
+		publisher.publish(accessLog);
 	}
 
 }

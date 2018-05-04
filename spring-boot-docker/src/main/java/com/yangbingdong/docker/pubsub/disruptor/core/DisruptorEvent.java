@@ -12,6 +12,10 @@ public class DisruptorEvent<SOURCE> {
 		return this.s;
 	}
 
+	public void setSource(SOURCE s) {
+		this.s = s;
+	}
+
 	public void clean() {
 		this.s = null;
 	}
