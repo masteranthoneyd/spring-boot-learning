@@ -1,28 +1,25 @@
 package com.yangbingdong.docker.pubsub.disruptor.core;
 
-import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.TimeoutException;
-import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.EventHandlerGroup;
-import com.lmax.disruptor.dsl.ProducerType;
-import com.yangbingdong.springboot.common.utils.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.context.event.ContextClosedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Collections.singletonList;
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toList;
+import static com.yangbingdong.springboot.common.utils.CollectionUtil.isEmpty;
+import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author ybd
@@ -31,12 +28,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Slf4j
 public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>> implements DisruptorPublisher<S> {
-	private int bufferSizePower = 18;
-	private ThreadFactory threadFactory = new BasicThreadFactory.Builder().namingPattern("disruptor-%d")
-																		  .daemon(true)
-																		  .build();
-	private ProducerType multi = ProducerType.MULTI;
-	private WaitStrategy waitStrategy = new BlockingWaitStrategy();
+	private DefaultDisruptorCommonComponents components = new DefaultDisruptorCommonComponents();
 	private ExceptionHandler<E> exceptionHandler = new DefaultExceptionHandler<>();
 	private Disruptor<E> disruptor;
 	private RingBuffer<E> ringBuffer;
@@ -46,55 +38,72 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 	@Override
 	public void afterPropertiesSet() {
 		log.info("Disruptor<{}> initialing......", this.getClass().getSimpleName());
-		int bufferSize = 1 << bufferSizePower;
-		disruptor = new Disruptor<>(provideEventFactory(), bufferSize, threadFactory, multi, waitStrategy);
+		customDisruptorComponents(components);
+		int bufferSize = 1 << components.getBufferSizePower();
+		disruptor = new Disruptor<>(provideEventFactory(), bufferSize,
+				components.getThreadFactory(), components.getProducerType(), components.getWaitStrategy());
 		disruptor.setDefaultExceptionHandler(exceptionHandler);
 
 		List<DisruptorEventHandler<E>> disruptorHandlers = provideDisruptorEventHandlers();
-		if (CollectionUtil.isEmpty(disruptorHandlers)) {
+		if (isEmpty(disruptorHandlers)) {
 			throw new IllegalArgumentException("Can not found handler!");
 		}
-		disruptorHandlers = sortHandlers(disruptorHandlers);
-		resolveDisruptorHandlers(disruptor, disruptorHandlers);
+		Map<Integer, List<DisruptorEventHandler<E>>> map = groupByOrder(disruptorHandlers);
+		List<Integer> keyList = resolveSortKeyList(map);
+		resolveDisruptorHandlers(disruptor, map, keyList);
 		disruptor.start();
 		ringBuffer = disruptor.getRingBuffer();
-		setTranslatorOneArg();
+		injectTranslatorOneArg();
 		log.info("Disruptor<{}> initialed......", this.getClass().getSimpleName());
 	}
 
-	private void setTranslatorOneArg() {
+	private List<Integer> resolveSortKeyList(Map<Integer, List<DisruptorEventHandler<E>>> map) {
+		List<Integer> keyList = new ArrayList<>(map.size());
+		keyList.addAll(map.keySet());
+		keyList.sort(comparing(identity()));
+		return keyList;
+	}
+
+	private Map<Integer, List<DisruptorEventHandler<E>>> groupByOrder(List<DisruptorEventHandler<E>> disruptorHandlers) {
+		return disruptorHandlers.stream()
+								.collect(groupingBy(DisruptorEventHandler::order));
+	}
+
+	private void injectTranslatorOneArg() {
 		this.translatorOneArg = provideTranslatorOneArg();
 	}
 
-	private List<DisruptorEventHandler<E>> sortHandlers(List<DisruptorEventHandler<E>> disruptorHandlers) {
-		return disruptorHandlers.stream()
-								.sorted(comparingInt(DisruptorEventHandler::order))
-								.collect(toList());
-	}
-
 	@SuppressWarnings("unchecked")
-	private void resolveDisruptorHandlers(Disruptor<E> disruptor, List<DisruptorEventHandler<E>> disruptorHandlers) {
-		int size = disruptorHandlers.size();
+	private void resolveDisruptorHandlers(Disruptor<E> disruptor, Map<Integer, List<DisruptorEventHandler<E>>> map, List<Integer> keyList) {
 		EventHandlerGroup<E> handlerGroup = null;
-		EventHandler<E>[] eventHandlerArray;
 		EventHandler<E> eventHandler;
+		List<EventHandler<E>> verticalEventHandlers;
+		int size = keyList.size();
 		for (int i = 0; i < size; i++) {
-			DisruptorEventHandler<E> handler = disruptorHandlers.get(i);
-			if (handler.enableSharding()) {
-				int shardingQuantity = handler.shardingQuantity();
-				eventHandlerArray = new EventHandler[shardingQuantity];
-				for (int j = 0; j < shardingQuantity; j++) {
-					eventHandler = buildShardingHandler(shardingQuantity, j, handler);
-					eventHandlerArray[j] = eventHandler;
+			verticalEventHandlers = new ArrayList<>(16);
+			List<DisruptorEventHandler<E>> disruptorEventHandlers = map.get(keyList.get(i));
+			if (isEmpty(disruptorEventHandlers)) {
+				throw new IllegalArgumentException();
+			}
+			for (DisruptorEventHandler<E> handler : disruptorEventHandlers) {
+				if (handler.enableSharding()) {
+					int shardingQuantity = handler.shardingQuantity();
+					for (int j = 0; j < shardingQuantity; j++) {
+						eventHandler = buildShardingHandler(shardingQuantity, j, handler);
+						verticalEventHandlers.add(eventHandler);
+					}
+				} else {
+					eventHandler = (event, sequence, endOfBatch) -> handler.onEvent(event, sequence, endOfBatch, 0);
+					verticalEventHandlers.add(eventHandler);
 				}
-			} else {
-				eventHandler = (event, sequence, endOfBatch) -> handler.onEvent(event, sequence, endOfBatch, 0);
-				eventHandlerArray = singletonList(eventHandler).toArray(new EventHandler[1]);
+			}
+			if (isEmpty(verticalEventHandlers)) {
+				throw new IllegalArgumentException();
 			}
 			if (i == 0) {
-				handlerGroup = disruptor.handleEventsWith(eventHandlerArray);
+				handlerGroup = disruptor.handleEventsWith(verticalEventHandlers.toArray(new EventHandler[0]));
 			} else {
-				handlerGroup = handlerGroup.then(eventHandlerArray);
+				handlerGroup = handlerGroup.then(verticalEventHandlers.toArray(new EventHandler[0]));
 			}
 		}
 
@@ -128,25 +137,11 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 		}
 	}
 
-	public void setBufferSizePower(int bufferSizePower) {
-		this.bufferSizePower = bufferSizePower;
-	}
-
-	public void setThreadFactory(ThreadFactory threadFactory) {
-		this.threadFactory = threadFactory;
-	}
-
-	public void setMulti(ProducerType multi) {
-		this.multi = multi;
-	}
-
-	public void setWaitStrategy(WaitStrategy waitStrategy) {
-		this.waitStrategy = waitStrategy;
-	}
+	protected abstract void customDisruptorComponents(DefaultDisruptorCommonComponents components);
 
 	protected abstract EventFactory<E> provideEventFactory();
 
 	protected abstract List<DisruptorEventHandler<E>> provideDisruptorEventHandlers();
 
-	protected abstract EventTranslatorOneArg<E,S> provideTranslatorOneArg();
+	protected abstract EventTranslatorOneArg<E, S> provideTranslatorOneArg();
 }

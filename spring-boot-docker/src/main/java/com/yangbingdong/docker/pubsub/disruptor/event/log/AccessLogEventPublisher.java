@@ -2,8 +2,10 @@ package com.yangbingdong.docker.pubsub.disruptor.event.log;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventTranslatorOneArg;
+import com.lmax.disruptor.dsl.ProducerType;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
 import com.yangbingdong.docker.pubsub.disruptor.core.AbstractDisruptorPublisher;
+import com.yangbingdong.docker.pubsub.disruptor.core.DefaultDisruptorCommonComponents;
 import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorEventHandler;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,11 @@ public class AccessLogEventPublisher extends AbstractDisruptorPublisher<AccessLo
 
 	@Resource
 	private List<DisruptorEventHandler<AccessLogEvent>> eventHandlers = new ArrayList<>(16);
+
+	@Override
+	protected void customDisruptorComponents(DefaultDisruptorCommonComponents components) {
+		components.setProducerType(ProducerType.MULTI);
+	}
 
 	@Override
 	protected EventFactory<AccessLogEvent> provideEventFactory() {
