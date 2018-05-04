@@ -5,7 +5,7 @@ package com.yangbingdong.docker.pubsub.disruptor.core;
  * @date 18-5-4
  * @contact yangbingdong1994@gmail.com
  */
-public abstract class AbstractDisruptorEvent<SOURCE> {
+public class DisruptorEvent<SOURCE> {
 	protected SOURCE s;
 
 	public SOURCE getSource() {

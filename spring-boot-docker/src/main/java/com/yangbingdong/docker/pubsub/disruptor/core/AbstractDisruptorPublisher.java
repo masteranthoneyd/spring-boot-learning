@@ -30,7 +30,7 @@ import static java.util.stream.Collectors.toList;
  * @contact yangbingdong1994@gmail.com
  */
 @Slf4j
-public abstract class AbstractDisruptorPublisher<S, E extends AbstractDisruptorEvent<S>> implements DisruptorPublisher<S> {
+public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>> implements DisruptorPublisher<S> {
 	private int bufferSizePower = 18;
 	private ThreadFactory threadFactory = new BasicThreadFactory.Builder().namingPattern("disruptor-%d")
 																		  .daemon(true)
