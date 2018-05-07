@@ -1,5 +1,6 @@
 package com.yangbingdong.docker.pubsub.disruptor.handler.log;
 
+import com.yangbingdong.docker.aop.Sharding;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
 import com.yangbingdong.docker.domain.repository.AccessLogRepository;
 import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorEventHandler;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Sharding(3)
 public class AccessLogPersistHandler implements DisruptorEventHandler<AccessLogEvent> {
 	private final AccessLogRepository accessLogRepository;
 
@@ -30,15 +32,5 @@ public class AccessLogPersistHandler implements DisruptorEventHandler<AccessLogE
 								   .parseAndFillReqData();
 		accessLogRepository.save(accessLog);
 		log.info("Success persist access log! sequence: {}, current shard: {}", sequence, currentShard);
-	}
-
-	@Override
-	public boolean enableSharding() {
-		return true;
-	}
-
-	@Override
-	public int shardingQuantity() {
-		return 3;
 	}
 }

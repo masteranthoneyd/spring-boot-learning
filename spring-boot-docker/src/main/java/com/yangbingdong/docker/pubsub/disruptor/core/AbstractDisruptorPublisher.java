@@ -8,6 +8,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.EventHandlerGroup;
+import com.yangbingdong.docker.aop.Sharding;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextClosedEvent;
 
@@ -28,33 +29,38 @@ import static java.util.stream.Collectors.groupingBy;
  */
 @Slf4j
 public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>> implements DisruptorPublisher<S> {
-	private DefaultDisruptorCommonComponents components = new DefaultDisruptorCommonComponents();
 	private ExceptionHandler<E> exceptionHandler = new DefaultExceptionHandler<>();
 	private Disruptor<E> disruptor;
 	private RingBuffer<E> ringBuffer;
-
 	private EventTranslatorOneArg<E, S> translatorOneArg;
+	private String eventName;
 
 	@Override
 	public void afterPropertiesSet() {
-		log.info("Disruptor<{}> initialing......", this.getClass().getSimpleName());
-		customDisruptorComponents(components);
-		int bufferSize = 1 << components.getBufferSizePower();
-		disruptor = new Disruptor<>(provideEventFactory(), bufferSize,
-				components.getThreadFactory(), components.getProducerType(), components.getWaitStrategy());
-		disruptor.setDefaultExceptionHandler(exceptionHandler);
-
-		List<DisruptorEventHandler<E>> disruptorHandlers = provideDisruptorEventHandlers();
-		if (isEmpty(disruptorHandlers)) {
-			throw new IllegalArgumentException("Can not found handler!");
+		eventName = provideEventType().getSimpleName();
+		log.info("Disruptor<{}> initialing......", eventName);
+		DefaultDisruptorCommonComponents components = provideDisruptorInitialComponents();
+		if (components == null) {
+			log.warn("DisruptorCommonComponents is null,DefaultDisruptorCommonComponents will be use");
+			components = new DefaultDisruptorCommonComponents();
 		}
-		Map<Integer, List<DisruptorEventHandler<E>>> map = groupByOrder(disruptorHandlers);
-		List<Integer> keyList = resolveSortKeyList(map);
-		resolveDisruptorHandlers(disruptor, map, keyList);
+		disruptor = newDisruptor(components);
+		disruptor.setDefaultExceptionHandler(exceptionHandler);
+		EventHandlerGroup<E> handlerGroup = resolveDisruptorHandlers(disruptor);
+		if (handlerGroup == null) {
+			throw new NullPointerException();
+		}
+		handlerGroup.then(new FinalCleanHandler<>());
 		disruptor.start();
 		ringBuffer = disruptor.getRingBuffer();
 		injectTranslatorOneArg();
-		log.info("Disruptor<{}> initialed......", this.getClass().getSimpleName());
+		log.info("Disruptor<{}> initialed......", eventName);
+	}
+
+	private Disruptor<E> newDisruptor(DefaultDisruptorCommonComponents components) {
+		int bufferSize = 1 << components.getBufferSizePower();
+		return new Disruptor<>(provideEventFactory(), bufferSize,
+				components.getThreadFactory(), components.getProducerType(), components.getWaitStrategy());
 	}
 
 	private List<Integer> resolveSortKeyList(Map<Integer, List<DisruptorEventHandler<E>>> map) {
@@ -74,7 +80,13 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 	}
 
 	@SuppressWarnings("unchecked")
-	private void resolveDisruptorHandlers(Disruptor<E> disruptor, Map<Integer, List<DisruptorEventHandler<E>>> map, List<Integer> keyList) {
+	private EventHandlerGroup<E> resolveDisruptorHandlers(Disruptor<E> disruptor) {
+		List<DisruptorEventHandler<E>> disruptorHandlers = provideDisruptorEventHandlers();
+		if (isEmpty(disruptorHandlers)) {
+			throw new IllegalArgumentException("Can not found handler!");
+		}
+		Map<Integer, List<DisruptorEventHandler<E>>> map = groupByOrder(disruptorHandlers);
+		List<Integer> keyList = resolveSortKeyList(map);
 		EventHandlerGroup<E> handlerGroup = null;
 		EventHandler<E> eventHandler;
 		List<EventHandler<E>> verticalEventHandlers;
@@ -86,8 +98,12 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 				throw new IllegalArgumentException();
 			}
 			for (DisruptorEventHandler<E> handler : disruptorEventHandlers) {
-				if (handler.enableSharding()) {
-					int shardingQuantity = handler.shardingQuantity();
+				if (handler.getClass().isAnnotationPresent(Sharding.class)) {
+					Sharding sharding = handler.getClass().getAnnotation(Sharding.class);
+					int shardingQuantity = sharding.value();
+					if (shardingQuantity < 1) {
+						throw new IllegalArgumentException();
+					}
 					for (int j = 0; j < shardingQuantity; j++) {
 						eventHandler = buildShardingHandler(shardingQuantity, j, handler);
 						verticalEventHandlers.add(eventHandler);
@@ -106,11 +122,7 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 				handlerGroup = handlerGroup.then(verticalEventHandlers.toArray(new EventHandler[0]));
 			}
 		}
-
-		if (handlerGroup == null) {
-			throw new NullPointerException();
-		}
-		handlerGroup.then((EventHandler<E>) (event, sequence, endOfBatch) -> event.clean());
+		return handlerGroup;
 	}
 
 	private EventHandler<E> buildShardingHandler(int shardingQuantity, int currentShard, DisruptorEventHandler<E> handler) {
@@ -128,6 +140,7 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
+		log.info("Disruptor<{}> shutdown", eventName);
 		if (disruptor != null) {
 			try {
 				disruptor.shutdown(5, TimeUnit.SECONDS);
@@ -137,11 +150,13 @@ public abstract class AbstractDisruptorPublisher<S, E extends DisruptorEvent<S>>
 		}
 	}
 
-	protected abstract void customDisruptorComponents(DefaultDisruptorCommonComponents components);
+	protected abstract DefaultDisruptorCommonComponents provideDisruptorInitialComponents();
 
 	protected abstract EventFactory<E> provideEventFactory();
 
 	protected abstract List<DisruptorEventHandler<E>> provideDisruptorEventHandlers();
 
 	protected abstract EventTranslatorOneArg<E, S> provideTranslatorOneArg();
+
+	protected abstract Class<E> provideEventType();
 }
