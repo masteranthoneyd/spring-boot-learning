@@ -1,7 +1,7 @@
 package com.yangbingdong.docker.pubsub.disruptor.event.log;
 
 import com.yangbingdong.docker.domain.core.root.AccessLog;
-import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorEvent;
+import com.yangbingdong.springboot.common.utils.disruptor.DisruptorEvent;
 
 /**
  * @author ybd

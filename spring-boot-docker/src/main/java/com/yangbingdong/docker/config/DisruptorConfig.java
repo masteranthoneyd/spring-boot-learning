@@ -2,11 +2,11 @@ package com.yangbingdong.docker.config;
 
 import com.lmax.disruptor.dsl.ProducerType;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
-import com.yangbingdong.docker.pubsub.disruptor.core.DefaultDisruptorCommonComponents;
-import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorEventHandler;
-import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorPublisher;
-import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorPublisherBuilderFactory;
 import com.yangbingdong.docker.pubsub.disruptor.event.log.AccessLogEvent;
+import com.yangbingdong.springboot.common.utils.disruptor.DefaultDisruptorCommonComponents;
+import com.yangbingdong.springboot.common.utils.disruptor.DisruptorEventHandler;
+import com.yangbingdong.springboot.common.utils.disruptor.DisruptorPublisher;
+import com.yangbingdong.springboot.common.utils.disruptor.DisruptorPublisherBuilderFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

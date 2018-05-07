@@ -1,4 +1,4 @@
-package com.yangbingdong.docker.pubsub.disruptor.core;
+package com.yangbingdong.springboot.common.utils.disruptor;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;

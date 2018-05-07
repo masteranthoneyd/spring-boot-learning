@@ -1,4 +1,4 @@
-package com.yangbingdong.docker.pubsub.disruptor.core;
+package com.yangbingdong.springboot.common.utils.disruptor;
 
 import com.lmax.disruptor.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;

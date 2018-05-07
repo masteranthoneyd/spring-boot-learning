@@ -1,6 +1,4 @@
-package com.yangbingdong.docker.aop;
-
-import com.yangbingdong.docker.pubsub.disruptor.core.AbstractDisruptorPublisher;
+package com.yangbingdong.springboot.common.utils.disruptor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

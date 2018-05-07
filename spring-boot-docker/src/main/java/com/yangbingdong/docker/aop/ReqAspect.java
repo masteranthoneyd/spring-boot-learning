@@ -3,7 +3,7 @@ package com.yangbingdong.docker.aop;
 import com.alibaba.fastjson.JSON;
 import com.yangbingdong.docker.domain.core.root.AccessLog;
 import com.yangbingdong.docker.domain.core.vo.ReqResult;
-import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorPublisher;
+import com.yangbingdong.springboot.common.utils.disruptor.DisruptorPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

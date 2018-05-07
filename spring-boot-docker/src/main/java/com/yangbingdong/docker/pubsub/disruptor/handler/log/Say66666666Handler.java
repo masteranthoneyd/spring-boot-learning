@@ -1,8 +1,7 @@
 package com.yangbingdong.docker.pubsub.disruptor.handler.log;
 
-import com.yangbingdong.docker.aop.Sharding;
-import com.yangbingdong.docker.pubsub.disruptor.core.DisruptorEventHandler;
 import com.yangbingdong.docker.pubsub.disruptor.event.log.AccessLogEvent;
+import com.yangbingdong.springboot.common.utils.disruptor.DisruptorEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-@Sharding(3)
 public class Say66666666Handler implements DisruptorEventHandler<AccessLogEvent> {
 
 	@Override

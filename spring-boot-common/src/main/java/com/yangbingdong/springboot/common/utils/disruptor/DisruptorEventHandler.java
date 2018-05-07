@@ -1,4 +1,4 @@
-package com.yangbingdong.docker.pubsub.disruptor.core;
+package com.yangbingdong.springboot.common.utils.disruptor;
 
 /**
  * @author ybd

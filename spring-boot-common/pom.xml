@@ -32,18 +32,21 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 高性能日志框架 Log4j2 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Log4j2 异步支持，Disruptor 超高性能并发框架 -->
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
+            <scope>provided</scope>
         </dependency>
 
 		<dependency>
@@ -62,12 +65,14 @@
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 使用高性能 Web 容器 undertow -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Lombok简洁代码插件 -->
@@ -75,6 +80,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

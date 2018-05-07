@@ -19,14 +19,12 @@ public class GracefulShutdownListener implements ApplicationListener<ContextClos
 
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
-		if (event.getApplicationContext().getParent() == null) {
-			try {
-				GracefulShutdownHandler gracefulShutdownHandler = gracefulShutdownWrapper.getGracefulShutdownHandler();
-				gracefulShutdownHandler.shutdown();
-				gracefulShutdownHandler.awaitShutdown(5000L);
-			} catch (InterruptedException e) {
-				log.error("Graceful shutdown container error:", e);
-			}
+		try {
+			GracefulShutdownHandler gracefulShutdownHandler = gracefulShutdownWrapper.getGracefulShutdownHandler();
+			gracefulShutdownHandler.shutdown();
+			gracefulShutdownHandler.awaitShutdown(5000L);
+		} catch (InterruptedException e) {
+			log.error("Graceful shutdown container error:", e);
 		}
 	}
 }
