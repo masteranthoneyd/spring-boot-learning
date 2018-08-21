@@ -20,6 +20,8 @@
         <module>spring-boot-async-and-schedule</module>
         <module>spring-boot-data-jpa</module>
         <module>spring-boot-blockchain</module>
+        <module>spring-boot-docker</module>
+        <module>spring-boot-validation</module>
     </modules>
 
 </project>

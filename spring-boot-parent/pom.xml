@@ -29,7 +29,7 @@
         <!-- 是否跳过构建docker -->
         <docker.skip.build>true</docker.skip.build>
         <!-- 是否构建镜像 -->
-        <docker.push.image>false</docker.push.image>
+        <docker.skip.push>false</docker.skip.push>
         <!-- Docker私服地址 -->
         <docker.registry.url>192.168.0.202:8080</docker.registry.url>
         <!-- 镜像库名称 -->
@@ -77,7 +77,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- webflux 依赖 H2控制台不支持 -->
+        <!-- webflux依赖， H2控制台不支持 -->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
@@ -164,6 +164,27 @@
                     </executions>
                 </plugin>
 
+                <!-- 此插件可以帮助我们在pom.xml中通过 ${timestamp} (对应下面配置的<name>标签)获取时间戳变量，构建基于时间戳的Docker标签 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <!--<version>${build-helper-maven-plugin.version}</version>-->
+                    <executions>
+                        <execution>
+                            <id>timestamp-property</id>
+                            <goals>
+                                <goal>timestamp-property</goal>
+                            </goals>
+                            <configuration>
+                                <name>timestamp</name>
+                                <pattern>yyyy-MM-dd_HH-mm</pattern>
+                                <timeZone>GMT+8</timeZone>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+
                 <!-- resources插件，使用@变量@形式获取Maven变量到Dockerfile中 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -188,6 +209,25 @@
                                 </resources>
                             </configuration>
                         </execution>
+                        <!-- 复制Jar包到target/docker目录中，方便本地使用 docker build 命令构建镜像 -->
+                        <execution>
+                            <id>copy-jar</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${dockerfile.compiled.position}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}</directory>
+                                        <includes>
+                                            <include>*.jar</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
                     </executions>
                 </plugin>
 
@@ -207,12 +247,12 @@
                         <!-- 部署时推送镜像到私有库 -->
                         <execution>
                             <id>push-image</id>
-                            <phase>install</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>push</goal>
                             </goals>
                             <configuration>
-                                <imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}:${docker-latest-tag}</imageName>
+                                <!--<imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}:${docker-latest-tag}</imageName>-->
                                 <imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}:${project.version}</imageName>
                             </configuration>
                         </execution>
@@ -220,14 +260,14 @@
                     <configuration>
                         <!-- 是否构建镜像 -->
                         <skipDocker>${docker.skip.build}</skipDocker>
+                        <!-- 是否推送镜像 -->
+                        <skipDockerPush>${docker.skip.push}</skipDockerPush>
                         <!--最后镜像产生了两个tag，版本和和最新的-->
                         <forceTags>true</forceTags>
                         <imageTags>
-                            <imageTag>${project.version}</imageTag>
+                            <!--<imageTag>${project.version}</imageTag>-->
                             <imageTag>${docker-latest-tag}</imageTag>
                         </imageTags>
-                        <!--install阶段也上传，否则只有deploy阶段上传-->
-                        <pushImage>${docker.push.image}</pushImage>
                         <!-- 配置镜像名称，遵循Docker的命名规范： springio/image -->
                         <imageName>${docker.registry.url}/${docker.registry.name}/${project.artifactId}</imageName>
                         <!-- Dockerfile位置，由于配置了编译时动态获取Maven变量，真正的Dockerfile位于位于编译后位置 -->
@@ -241,7 +281,7 @@
                         </resources>
                         <!--push到私有的hub-->
                         <serverId>docker-registry</serverId>
-                        <registryUrl>${docker.registry.url}</registryUrl>
+                        <!--<registryUrl>${docker.registry.url}</registryUrl>-->
                     </configuration>
                 </plugin>
             </plugins>
