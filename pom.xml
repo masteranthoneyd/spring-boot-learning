@@ -22,6 +22,9 @@
         <module>spring-boot-blockchain</module>
         <module>spring-boot-docker</module>
         <module>spring-boot-validation</module>
+        <module>spring-boot-websocket</module>
+        <module>spring-boot-security</module>
+        <module>spring-boot-mail</module>
     </modules>
 
 </project>
