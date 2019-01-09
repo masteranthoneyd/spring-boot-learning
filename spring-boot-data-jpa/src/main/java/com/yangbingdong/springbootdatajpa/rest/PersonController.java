@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootdatajpa.controller;
+package com.yangbingdong.springbootdatajpa.rest;
 
 import com.yangbingdong.springbootdatajpa.domain.repository.PersonRepository;
 import com.yangbingdong.springbootdatajpa.domain.root.Person;
@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,10 +16,9 @@ import java.util.List;
  * @date 18-3-2
  * @contact yangbingdong1994@gmail.com
  */
-@RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/person")
+@Rest("/person")
 public class PersonController {
 	private final PersonRepository personRepository;
 

@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootdatajpa.controller;
+package com.yangbingdong.springbootdatajpa.rest;
 
 import com.yangbingdong.springbootdatajpa.domain.root.Foo;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -18,7 +17,7 @@ import java.util.Set;
  * @date 18-3-28
  * @contact yangbingdong1994@gmail.com
  */
-@RestController
+@Rest
 @Slf4j
 @RequiredArgsConstructor
 public class FooController {
