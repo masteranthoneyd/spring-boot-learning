@@ -1,6 +1,6 @@
 package com.yangbingdong.springbootdatajpa.util;
 
-import com.yangbingdong.springboot.common.utils.SnowflakeSequencer;
+import com.yangbingdong.springboot.common.utils.id.IdGeneratorPlus;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -16,11 +16,11 @@ import java.io.Serializable;
 @SuppressWarnings("unused")
 @Slf4j
 public class SnowflakeIdentifierGenerator implements IdentifierGenerator {
-	private SnowflakeSequencer snowflakeSequencer = SnowflakeSequencer.INSTANCE;
+	public static final String CLASS_NAME = "com.yangbingdong.springbootdatajpa.util.SnowflakeIdentifierGenerator";
 
 	@Override
 	public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-		Long id = snowflakeSequencer.nextId();
+		Long id = IdGeneratorPlus.shoot();
 		log.info("SnowflakeIdentifierGenerator... id = {}", id);
 		return id;
 	}

@@ -1,4 +1,4 @@
-package com.yangbingdong.springboot.common.utils;
+package com.yangbingdong.springboot.common.utils.id;
 
 import java.time.LocalDate;
 
@@ -26,9 +26,9 @@ import static java.time.ZoneId.systemDefault;
 public class Snowflake {
 
 	/**
-	 * 时间起始标记点，作为基准，一般取系统的最近时间，默认2018-01-01
+	 * 时间起始标记点，作为基准，一般取系统的最近时间，默认2019-01-01
 	 */
-	private static final long EPOCH = LocalDate.of(2018, 1 ,1).atStartOfDay().atZone(systemDefault()).toInstant().toEpochMilli();
+	private static final long EPOCH = LocalDate.of(2019, 1 ,1).atStartOfDay().atZone(systemDefault()).toInstant().toEpochMilli();
 
 	/**
 	 * 机器ID

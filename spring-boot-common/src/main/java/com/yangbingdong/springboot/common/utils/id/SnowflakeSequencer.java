@@ -1,4 +1,4 @@
-package com.yangbingdong.springboot.common.utils;
+package com.yangbingdong.springboot.common.utils.id;
 
 
 /**

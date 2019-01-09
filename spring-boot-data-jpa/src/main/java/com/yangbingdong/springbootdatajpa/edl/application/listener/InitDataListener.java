@@ -40,6 +40,7 @@ public class InitDataListener implements ApplicationListener<ApplicationStartedE
 
 	private void saveUser() {
 		userRepository.save(new User().setName("ybd").setEmail("yba.com"));
+		userRepository.save(new User().setName("杨秉东").setEmail("yangbingdong.com"));
 		userRepository.save(new User().setName("yqy").setEmail("yqy.com").setCreateTime(LocalDateTime.parse("2018-10-10 10:10:10", DATE_TIME_FORMATTER)));
 	}
 

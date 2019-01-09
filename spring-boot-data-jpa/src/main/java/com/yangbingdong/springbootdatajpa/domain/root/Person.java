@@ -1,11 +1,11 @@
 package com.yangbingdong.springbootdatajpa.domain.root;
 
+import com.yangbingdong.springbootdatajpa.domain.SnowflakeIdGenerator;
 import com.yangbingdong.springbootdatajpa.domain.vo.Sex;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -33,9 +33,8 @@ import static javax.persistence.EnumType.STRING;
 public class Person {
 
 	@Id
-	@GeneratedValue(generator = "snowflakeIdentifierGenerator")
-	@GenericGenerator(name = "snowflakeIdentifierGenerator", strategy = "com.yangbingdong.springbootdatajpa.util.SnowflakeIdentifierGenerator")
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SnowflakeIdGenerator
+	@GeneratedValue(generator = SnowflakeIdGenerator.GEN_NAME)
 	private long id;
 
 	private String name;

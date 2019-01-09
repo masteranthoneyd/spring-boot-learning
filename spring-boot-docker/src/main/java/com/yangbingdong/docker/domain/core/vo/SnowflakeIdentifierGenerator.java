@@ -1,6 +1,6 @@
 package com.yangbingdong.docker.domain.core.vo;
 
-import com.yangbingdong.springboot.common.utils.SnowflakeSequencer;
+import com.yangbingdong.springboot.common.utils.id.SnowflakeSequencer;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
