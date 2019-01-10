@@ -1,9 +1,9 @@
 package com.yangbingdong.springboot.common.utils.function;
 
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -16,6 +16,19 @@ import static java.util.Objects.requireNonNull;
  * Lambda包装检测异常为非检测异常
  */
 public final class Trier {
+
+	public static <T, U, R> BiFunction<T, U, R> tryBiFunction(UncheckedBiFunction<T, U, R> function) {
+		requireNonNull(function);
+		return (t, u) -> {
+			try {
+				return function.apply(t, u);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		};
+	}
+
+
 	public static <T, R> Function<T, R> tryFunction(UncheckedFunction<T, R> function) {
 		requireNonNull(function);
 		return t -> {
@@ -71,17 +84,6 @@ public final class Trier {
 		};
 	}
 
-	public static IntConsumer tryIntConsumer(UncheckedIntConsumer consumer) {
-		requireNonNull(consumer);
-		return i -> {
-			try {
-				consumer.accept(i);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		};
-	}
-
 	public static LongConsumer tryLongConsumer(UncheckedLongConsumer consumer) {
 		requireNonNull(consumer);
 		return l -> {
@@ -110,7 +112,7 @@ public final class Trier {
 			try {
 				return predicate.test(t);
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				return defaultValue;
 			}
 		};
 	}
