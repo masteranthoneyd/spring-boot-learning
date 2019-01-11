@@ -78,9 +78,9 @@ public class TableInfoParser {
 
 	public ClassInfo parse() {
 		try (Connection connection = connectionProvider.provideConnection()) {
-			printDdl(connection);
 			DatabaseMetaData metaData = connection.getMetaData();
 			printDbBaseInfo(metaData);
+			printDdl(connection);
 			ClassInfo classInfo = parseClassInfo(metaData);
 			List<FieldInfo> fieldInfos = parseFieldInfos(metaData);
 			classInfo.setFieldList(fieldInfos);
