@@ -1,6 +1,7 @@
 package com.yangbingdong.springbootdatajpa.rest.exception;
 
 import com.yangbingdong.springbootdatajpa.rest.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +17,7 @@ import javax.validation.ConstraintViolationException;
  * @date 18-3-29
  * @contact yangbingdong1994@gmail.com
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -45,6 +47,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(value = {Exception.class})
 	public Response<Void> handle(Exception exception) {
+		log.error("GlobalExceptionHandler catch: ", exception);
 		return Response.error(exception.getMessage());
 	}
 }

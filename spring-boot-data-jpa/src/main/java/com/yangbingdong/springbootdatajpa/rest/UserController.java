@@ -3,6 +3,9 @@ package com.yangbingdong.springbootdatajpa.rest;
 import com.yangbingdong.springbootdatajpa.domain.repository.UserRepository;
 import com.yangbingdong.springbootdatajpa.domain.root.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author ybd
@@ -37,8 +41,8 @@ public class UserController {
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public void delete(@PathVariable Long id) {
-		userRepository.deleteById(id);
+	public List<User> delete(@PathVariable Long id) {
+		return userRepository.deleteByNameStartsWith("yb");
 	}
 
 	@GetMapping(value = "/string")
@@ -49,5 +53,20 @@ public class UserController {
 	@GetMapping(value = "/error")
 	public String getErrorTest() {
 		throw new IllegalArgumentException("Error test");
+	}
+
+	@GetMapping(path = "/page")
+	public Page<User> getAllUserByPage() {
+		return userRepository.findByName("ybd", PageRequest.of(1, 1, Sort.Direction.DESC, "createTime"));
+	}
+
+	@GetMapping(path = "/sort")
+	public Iterable<User> getAllUsersWithSort() {
+		return userRepository.findAll(Sort.by(new Sort.Order(Sort.Direction.ASC,"name")));
+	}
+
+	@GetMapping(path = "/like")
+	public List<User> findUserByNameLike() {
+		return userRepository.findByNameStartsWith("yb");
 	}
 }
