@@ -7,7 +7,7 @@ import java.sql.Connection;
  * @date 19-1-10
  * @contact yangbingdong1994@gmail.com
  */
-public interface ConnectionProvider extends AutoCloseable {
+public interface ConnectionProvider {
 
 	Connection provideConnection();
 

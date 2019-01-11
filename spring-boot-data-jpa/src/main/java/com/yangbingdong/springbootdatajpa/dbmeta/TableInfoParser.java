@@ -3,6 +3,7 @@ package com.yangbingdong.springbootdatajpa.dbmeta;
 import com.yangbingdong.springbootdatajpa.dbmeta.entity.ClassInfo;
 import com.yangbingdong.springbootdatajpa.dbmeta.entity.FieldInfo;
 import com.yangbingdong.springbootdatajpa.dbmeta.entity.IndexInfo;
+import com.yangbingdong.springbootdatajpa.dbmeta.entity.PrimaryKeyInfo;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -35,7 +36,6 @@ import static java.util.stream.Collectors.toMap;
 public class TableInfoParser {
 	static final String DATA_URL = "jdbc:mysql://localhost:3306/jpa_test?useSSL=false";
 
-	// 数据库的用户名与密码，需要根据自己的设置
 	static final String USER = "root";
 	static final String PASS = "root";
 
@@ -66,11 +66,11 @@ public class TableInfoParser {
 
 	private void printDbBaseInfo(DatabaseMetaData metaData) {
 		try {
-			System.out.println("/////////////////////// Saber Code Generator ////////////////////////////\n" +
+			System.out.println("/////////////////////// Berserker Generator ////////////////////////////\n" +
 					"////// -> MySQL Version: " + metaData.getDatabaseProductVersion() + "\n" +
 					"////// -> Driver Version: " + metaData.getDriverVersion() + "\n" +
 					"////// -> Generating...............\n" +
-					"/////////////////////// Saber Code Generator ////////////////////////////\n");
+					"/////////////////////// Berserker Generator ////////////////////////////\n");
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -78,18 +78,22 @@ public class TableInfoParser {
 
 	public ClassInfo parse() {
 		try (Connection connection = connectionProvider.provideConnection()) {
+			printDdl(connection);
 			DatabaseMetaData metaData = connection.getMetaData();
 			printDbBaseInfo(metaData);
 			ClassInfo classInfo = parseClassInfo(metaData);
 			List<FieldInfo> fieldInfos = parseFieldInfos(metaData);
-			classInfo.setFieldList(fieldInfos)
-					 .setCreateDdl(parseDdl(connection));
-			handlerIndex(classInfo, metaData);
-			handlerPrimaryKey(classInfo, metaData);
+			classInfo.setFieldList(fieldInfos);
+			handlerPrimaryKeyAndIndex(classInfo, metaData);
+			printSuccess();
 			return classInfo;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void printSuccess() {
+		System.out.println("\n/////////////////////// Generated Successful ////////////////////////////\n");
 	}
 
 	private ClassInfo parseClassInfo(DatabaseMetaData metaData) {
@@ -117,13 +121,14 @@ public class TableInfoParser {
 		}
 	}
 
-	private String parseDdl(Connection connection) {
+	private void printDdl(Connection connection) {
 		try {
 			Statement statement = connection.createStatement();
 			String ddlQuery = MessageFormat.format("SHOW CREATE TABLE {0}", tableName);
 			ResultSet resultSet = statement.executeQuery(ddlQuery);
 			if (resultSet.next()) {
-				return resultSet.getString("CREATE TABLE");
+				String createTable = resultSet.getString("CREATE TABLE");
+				System.out.println("/////////////////////// ↓ Create Table DDL ↓ ////////////////////////////\n\n" + createTable);
 			} else {
 				throw new IllegalArgumentException("Not ddl found");
 			}
@@ -143,8 +148,6 @@ public class TableInfoParser {
 						 .setFieldComment(rs.getString("REMARKS"))
 						 .setFieldClass(parseDataType(rs.getString("TYPE_NAME")))
 						 .setFieldName(underlineToCamelCase(columnName));
-				int dataType = rs.getInt("DATA_TYPE");
-				int sqlDataType = rs.getInt("SQL_DATA_TYPE");
 				fieldList.add(fieldInfo);
 			}
 			return fieldList;
@@ -153,47 +156,33 @@ public class TableInfoParser {
 		}
 	}
 
-	private void handlerIndex(ClassInfo classInfo, DatabaseMetaData metaData) {
-		try{
+	private void handlerPrimaryKeyAndIndex(ClassInfo classInfo, DatabaseMetaData metaData) {
+		try {
 			Map<String, FieldInfo> fieldMap = resolveToFieldInfoMap(classInfo);
-			ResultSet rs = metaData.getIndexInfo(catalog, null, tableName, false, true);
 			Map<String, IndexInfo> indexInfoMap = new HashMap<>(16);
+			PrimaryKeyInfo primaryKeyInfo = new PrimaryKeyInfo();
+			ResultSet rs = metaData.getIndexInfo(catalog, null, tableName, false, true);
 			while (rs.next()) {
 				String indexName = rs.getString("INDEX_NAME");
 				if ("PRIMARY".equalsIgnoreCase(indexName)) {
+					primaryKeyInfo.addPrimaryKey(fieldMap.computeIfPresent(rs.getString("COLUMN_NAME"), (s, fieldInfo) -> fieldInfo.setPrimary(true)));
 					continue;
 				}
-				/*IndexInfo indexInfo = indexInfoMap.computeIfAbsent(indexName, key -> new IndexInfo());
-				indexInfo.setIndexName(indexName)
-						 .setUnique(!rs.getBoolean("NON_UNIQUE"))
-						 .addFieldInfo(fieldMap.get(rs.getString("COLUMN_NAME")));
-				indexInfoMap.put(indexName, indexInfo);*/
-
 				indexInfoMap.compute(indexName,
 						tryBiFunction((s, indexInfo) -> Optional.ofNullable(indexInfo)
-																 .orElse(new IndexInfo())
-																 .setIndexName(indexName)
-																 .setUnique(!rs.getBoolean("NON_UNIQUE"))
-																 .addFieldInfo(fieldMap.get(rs.getString("COLUMN_NAME")))));
+																.orElse(new IndexInfo())
+																.setIndexName(indexName)
+																.setUnique(!rs.getBoolean("NON_UNIQUE"))
+																.addFieldInfo(fieldMap.get(rs.getString("COLUMN_NAME")))));
 			}
 			if (indexInfoMap.size() > 0) {
-				List<IndexInfo> indexList = new ArrayList<>(indexInfoMap.values());
-				indexList.forEach(index -> index.setUnionIndex(index.getFieldList().size() > 1));
-				classInfo.setIndexList(indexList);
+				classInfo.setIndexList(new ArrayList<>(indexInfoMap.values()))
+						 .setHasIndex(true)
+						 .getIndexList()
+						 .forEach(IndexInfo::judgeUnion);
 			}
-		} catch (SQLException e){
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void handlerPrimaryKey(ClassInfo classInfo, DatabaseMetaData metaData) {
-		try{
-			Map<String, FieldInfo> fieldMap = resolveToFieldInfoMap(classInfo);
-			ResultSet rs = metaData.getPrimaryKeys(catalog, null, tableName);
-			while (rs.next()){
-				fieldMap.computeIfPresent(rs.getString("COLUMN_NAME"), (s, fieldInfo) -> fieldInfo.setPrimary(true));
-			}
-		}catch (SQLException e){
+			classInfo.setPrimaryKey(primaryKeyInfo.judgeUnion());
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}

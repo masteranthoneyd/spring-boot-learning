@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * @author ybd
@@ -15,29 +14,25 @@ import java.sql.SQLException;
 public class NativeConnectionProvider implements ConnectionProvider {
 
 	private static final String MYSQL = "mysql";
-	private Connection connection;
+	private String url;
+	private String user;
+	private String password;
 
 	public NativeConnectionProvider(String url, String user, String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
 		if (!url.contains(MYSQL)) {
 			throw new IllegalArgumentException("Only support MySQL!");
-		}
-		try {
-			connection = DriverManager.getConnection(url, user, password);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public Connection provideConnection() {
-		return connection;
-	}
-
-	@Override
-	public void close() throws SQLException {
-		if (connection != null) {
-//			log.info("Closing connection......");
-			connection.close();
+		try {
+			return DriverManager.getConnection(url, user, password);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

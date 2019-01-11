@@ -16,8 +16,8 @@ public class ClassInfo {
 	private String tableName;
 	private String className;
 	private String classComment;
-	private String createDdl;
 	private boolean hasIndex;
+	private PrimaryKeyInfo primaryKey;
 	private List<FieldInfo> fieldList;
 	private List<IndexInfo> indexList;
 }

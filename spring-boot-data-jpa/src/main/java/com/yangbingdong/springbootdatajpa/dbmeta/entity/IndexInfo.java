@@ -23,4 +23,8 @@ public class IndexInfo {
 		fieldList.add(fieldInfo);
 		return this;
 	}
+
+	public IndexInfo judgeUnion() {
+		return this.setUnionIndex(fieldList.size() > 1);
+	}
 }
