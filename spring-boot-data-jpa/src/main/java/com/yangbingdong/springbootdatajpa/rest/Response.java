@@ -15,8 +15,9 @@ public class Response<T> {
 	private T body;
 	private String errorMsg;
 
+	@SuppressWarnings("unchecked")
 	public static <T> Response<T> ok(T body) {
-		return body instanceof Response ? (Response) body : new Response<T>().setBody(body);
+		return body instanceof Response ? (Response<T>) body : new Response<T>().setBody(body);
 	}
 
 	public static Response<Void> ok() {

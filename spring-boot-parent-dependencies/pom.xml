@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.4.RELEASE</version>
+        <version>2.1.2.RELEASE</version>
     </parent>
 
     <properties>
@@ -27,8 +27,8 @@
         <commons-collections4.version>4.1</commons-collections4.version>
         <fastjson.version>1.2.47</fastjson.version>
         <contiperf.version>2.1.0</contiperf.version>
-        <spring-boot.version>2.0.1.RELEASE</spring-boot.version>
-        <snakeyaml.version>1.19</snakeyaml.version>
+        <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
+        <!--<snakeyaml.version>1.19</snakeyaml.version>-->
         <kafka-clients.version>1.1.0</kafka-clients.version>
     </properties>
 
@@ -73,11 +73,11 @@
             </dependency>
 
             <!-- 解析YAML -->
-            <dependency>
+<!--            <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
-            </dependency>
+            </dependency>-->
 
             <!-- kafka客户端 -->
             <dependency>
