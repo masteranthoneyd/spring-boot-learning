@@ -1,8 +1,9 @@
 package com.yangbingdong.springbootdatajpa.domain.root;
 
-import com.yangbingdong.springbootdatajpa.domain.SnowflakeIdGenerator;
+import com.yangbingdong.springbootdatajpa.util.SnowflakeIdentifierGenerator;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +22,8 @@ import java.time.LocalDateTime;
 @Entity
 public class User {
 	@Id
-	@SnowflakeIdGenerator
-	@GeneratedValue(generator = SnowflakeIdGenerator.GEN_NAME)
+	@GenericGenerator(name = SnowflakeIdentifierGenerator.NAME, strategy = SnowflakeIdentifierGenerator.CLASS_NAME)
+	@GeneratedValue(generator = SnowflakeIdentifierGenerator.NAME)
 	private Long id;
 
 	@NotBlank(message = "姓名不能为空")

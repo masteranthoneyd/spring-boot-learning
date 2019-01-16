@@ -23,7 +23,6 @@
         <java.version>1.8</java.version>
 
         <spring-boot-common.version>0.0.1-SNAPSHOT</spring-boot-common.version>
-        <fastjson.version>1.2.54</fastjson.version>
     </properties>
 
     <dependencies>
@@ -63,18 +62,20 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!-- 抓取sql -->
         <dependency>
             <groupId>com.googlecode.log4jdbc</groupId>
             <artifactId>log4jdbc</artifactId>
             <version>1.2</version>
         </dependency>
 
-        <!-- h2 数据源连接驱动 -->
+        <!-- 抓取sql -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.7.0</version>
         </dependency>
+
 
         <!-- 提供自定义元数据支持 -->
         <dependency>
@@ -94,7 +95,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
         </dependency>
 
         <!-- 提供 Spring Boot 测试支持 -->

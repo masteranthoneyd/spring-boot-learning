@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/jpa_test?useSSL=false
+    url: jdbc:p6spy:mysql://127.0.0.1:3306/jpa_test?useSSL=false
     username: root
     password: root
-    driver-class-name: net.sf.log4jdbc.DriverSpy #com.mysql.jdbc.Driver
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver #com.mysql.jdbc.Driver
 #  datasource:
 #    url: jdbc:mysql://192.168.6.113:3306/sync?useUnicode=true&characterEncoding=utf8&useSSL=false # 注意加上 useSSL=false
 #    username: root
@@ -13,7 +13,7 @@ spring:
 
   jpa:
     generate-ddl: false
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: create # create、create-drop、update、validate、none
     properties:

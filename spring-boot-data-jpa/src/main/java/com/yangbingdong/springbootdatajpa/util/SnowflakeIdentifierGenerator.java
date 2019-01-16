@@ -17,11 +17,10 @@ import java.io.Serializable;
 @Slf4j
 public class SnowflakeIdentifierGenerator implements IdentifierGenerator {
 	public static final String CLASS_NAME = "com.yangbingdong.springbootdatajpa.util.SnowflakeIdentifierGenerator";
+	public static final String NAME = "snowflakeIdentifierGenerator";
 
 	@Override
 	public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-		Long id = IdGeneratorPlus.shoot();
-		log.info("SnowflakeIdentifierGenerator... id = {}", id);
-		return id;
+		return IdGeneratorPlus.shoot();
 	}
 }
