@@ -11,10 +11,11 @@ spring:
 
   # H2 连接
   datasource:
-    url: jdbc:h2:mem:test # 使用内存存储
-#    url: jdbc:h2:file:~/test # 使用物理盘存储
-    username: sa
-    password:
+#    url: jdbc:h2:mem:test # 使用内存存储
+    url: jdbc:p6spy:mysql://127.0.0.1:3306/jpa_test?useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 #    driver-class-name: org.h2.Driver
     hikari:
       maximum-pool-size: 13 #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
@@ -30,7 +31,7 @@ spring:
   ###### JPA配置【开始】 ######
   jpa:
     generate-ddl: false
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: create # create、create-drop、update、validate、none
 #    properties:

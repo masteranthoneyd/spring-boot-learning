@@ -40,6 +40,16 @@ public class UserController {
 		return userRepository.findById(id).orElse(null);
 	}
 
+	@GetMapping(path = "/email/{email}")
+	public User findOneByEmail(@PathVariable String email) {
+		return userRepository.findFirstByEmail(email);
+	}
+
+	@GetMapping(path = "/query1/{name}")
+	public List<User> findOneByCustom1(@PathVariable String name) {
+		return userRepository.customFindByName(name);
+	}
+
 	@DeleteMapping(path = "/{id}")
 	public List<User> delete(@PathVariable Long id) {
 		return userRepository.deleteByNameStartsWith("yb");
@@ -62,7 +72,7 @@ public class UserController {
 
 	@GetMapping(path = "/sort")
 	public Iterable<User> getAllUsersWithSort() {
-		return userRepository.findAll(Sort.by(new Sort.Order(Sort.Direction.ASC,"name")));
+		return userRepository.findAll(Sort.by(Sort.Direction.ASC, User.NAME));
 	}
 
 	@GetMapping(path = "/like")

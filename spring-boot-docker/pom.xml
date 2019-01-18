@@ -23,10 +23,11 @@
     </properties>
 
     <dependencies>
+        <!-- 抓取sql -->
         <dependency>
-            <groupId>com.googlecode.log4jdbc</groupId>
-            <artifactId>log4jdbc</artifactId>
-            <version>1.2</version>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.7.0</version>
         </dependency>
 
         <dependency>
