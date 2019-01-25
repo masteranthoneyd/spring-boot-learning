@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootdatajpa.rest;
+package com.yangbingdong.springbootdatajpa.controller;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;

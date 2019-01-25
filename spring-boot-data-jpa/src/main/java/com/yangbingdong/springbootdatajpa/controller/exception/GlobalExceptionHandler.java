@@ -1,6 +1,6 @@
-package com.yangbingdong.springbootdatajpa.rest.exception;
+package com.yangbingdong.springbootdatajpa.controller.exception;
 
-import com.yangbingdong.springbootdatajpa.rest.Response;
+import com.yangbingdong.springbootdatajpa.controller.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;

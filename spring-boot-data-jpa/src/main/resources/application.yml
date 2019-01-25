@@ -4,7 +4,10 @@ spring:
     username: root
     password: root
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver #com.mysql.jdbc.Driver
-#  datasource:
+    schema: classpath:db/schema-mysql.sql
+    data: classpath:db/data-mysql.sql
+    initialization-mode: always
+  #  datasource:
 #    url: jdbc:mysql://192.168.6.113:3306/sync?useUnicode=true&characterEncoding=utf8&useSSL=false # 注意加上 useSSL=false
 #    username: root
 #    password: root
@@ -15,10 +18,11 @@ spring:
     generate-ddl: false
     show-sql: false
     hibernate:
-      ddl-auto: create # create、create-drop、update、validate、none
+      ddl-auto: none # create、create-drop、update、validate、none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect  # 方言设置，默认就为MySQL5Dialect，或者MySQL5InnoDBDialect使用InnoDB引擎
+    open-in-view: true
 
   ## DATA WEB 相关配置 {@link SpringDataWebProperties}
   data:

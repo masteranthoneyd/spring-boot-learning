@@ -1,7 +1,9 @@
-package com.yangbingdong.springbootdatajpa.rest;
+package com.yangbingdong.springbootdatajpa.controller;
 
-import com.yangbingdong.springbootdatajpa.domain.repository.UserRepository;
+import com.yangbingdong.springbootdatajpa.domain.repository.UserJpaRepository;
+import com.yangbingdong.springbootdatajpa.domain.root.Role;
 import com.yangbingdong.springbootdatajpa.domain.root.User;
+import com.yangbingdong.springbootdatajpa.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +25,15 @@ import java.util.List;
 @Rest("/user")
 public class UserController {
 	@Autowired
-	private UserRepository userRepository;
+	private UserJpaRepository userRepository;
+
+	@Autowired
+	private UserService userService;
+
+	@GetMapping("/condition/{name}-{email}")
+	public List<User> findByCondition(@PathVariable String name, @PathVariable String email) {
+		return userService.findByCondition(new User().setName(name).setEmail(email));
+	}
 
 	@GetMapping
 	public Iterable<User> getAllUsers() {
@@ -36,8 +46,8 @@ public class UserController {
 	}
 
 	@GetMapping(path = "/{id}")
-	public User findOne(@PathVariable Long id) {
-		return userRepository.findById(id).orElse(null);
+	public List<Role> findOne(@PathVariable Long id) {
+		return userRepository.findById(id).orElse(null).getRoles();
 	}
 
 	@GetMapping(path = "/email/{email}")

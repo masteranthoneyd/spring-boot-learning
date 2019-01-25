@@ -1,4 +1,4 @@
-package com.yangbingdong.springbootdatajpa.rest;
+package com.yangbingdong.springbootdatajpa.controller;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
