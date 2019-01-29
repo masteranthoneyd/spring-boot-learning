@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 
+import static com.yangbingdong.springboot.common.utils.function.Trier.tryConsumer;
+import static java.util.Optional.ofNullable;
+
 /**
  * @author ybd
  * @date 18-4-19
@@ -20,11 +23,15 @@ public class GracefulShutdownListener implements ApplicationListener<ContextClos
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
 		try {
-			GracefulShutdownHandler gracefulShutdownHandler = gracefulShutdownWrapper.getGracefulShutdownHandler();
-			gracefulShutdownHandler.shutdown();
-			gracefulShutdownHandler.awaitShutdown(5000L);
-		} catch (InterruptedException e) {
+			ofNullable(gracefulShutdownWrapper.getGracefulShutdownHandler())
+					.ifPresent(tryConsumer(this::shutdownInternal));
+		} catch (Exception e) {
 			log.error("Graceful shutdown container error:", e);
 		}
+	}
+
+	private void shutdownInternal(GracefulShutdownHandler handler) throws InterruptedException {
+		handler.shutdown();
+		handler.awaitShutdown(5000L);
 	}
 }
