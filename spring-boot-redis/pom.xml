@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <artifactId>spring-data-redis</artifactId>
+    <artifactId>spring-boot-redis</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-data-redis</name>
     <description>Demo project for Spring Boot Data Redis</description>
