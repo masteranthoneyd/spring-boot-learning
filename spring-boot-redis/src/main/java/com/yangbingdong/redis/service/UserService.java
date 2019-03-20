@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
  * @contact yangbingdong1994@gmail.com
  */
 @Service
-public class UserService extends BaseService<User, Long> {
+public class UserService extends BaseService<User> {
 
 }

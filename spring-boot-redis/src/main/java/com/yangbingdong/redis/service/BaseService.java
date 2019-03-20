@@ -15,7 +15,7 @@ import static com.alibaba.fastjson.util.TypeUtils.getGenericParamType;
  * @date 19-1-29
  * @contact yangbingdong1994@gmail.com
  */
-public class BaseService<T, ID> implements InitializingBean {
+public class BaseService<T> implements InitializingBean {
 
 	@Getter
 	private BaseRedisOps<T> redisOps;
