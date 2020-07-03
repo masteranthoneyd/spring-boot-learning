@@ -44,7 +44,7 @@ public class WebMvcMessageConvertConfig implements WebMvcConfigurer {
 		fastJsonConfig.setDateFormat(Constant.DATE_FORMAT);
 
 		fastConverter.setFastJsonConfig(fastJsonConfig);
-		fastConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
+		fastConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
 		converters.add(0, stringHttpMessageConverter);
 		converters.add(1, fastConverter);
 	}

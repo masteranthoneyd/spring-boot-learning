@@ -19,7 +19,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 @EnableScheduling
 public class SpringScheduleConfig implements SchedulingConfigurer {
 
-	@SuppressWarnings("NullableProblems")
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 		taskRegistrar.setScheduler(taskExecutor());

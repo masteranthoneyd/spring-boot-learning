@@ -13,7 +13,8 @@
 | *[spring-boot-blockchain](https://github.com/masteranthoneyd/spring-boot-learning/tree/master/spring-boot-blockchain)* | 区块链学习                          |
 | *[spring-boot-validation](https://github.com/masteranthoneyd/spring-boot-learning/tree/master/spring-boot-validation)* | Hibernate Validation Demo           |
 | *[spring-boot-docker](https://github.com/masteranthoneyd/spring-boot-learning/tree/master/spring-boot-docker)* | Docker integration                  |
-|                                                              |                                     |
+| *[spring-boot-async-and-schedule](https://github.com/masteranthoneyd/spring-boot-learning/tree/master/spring-boot-async-and-schedule)* | 简单异步与定时任务       |
+| *[spring-boot-security](https://github.com/masteranthoneyd/spring-boot-learning/tree/master/spring-boot-security)* | Spring security 安全认证       |
 
 **打包顺序**：
 
