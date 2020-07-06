@@ -14,9 +14,9 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -68,56 +68,57 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserPermissionEvaluator permissionEvaluator;
 
     /**
-     * 配置登录验证逻辑
+     * 静态资源不需要走过滤链
      */
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(userAuthenticationProvider);
+    public void configure(WebSecurity web) {
+        web.ignoring()
+           .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            // 不需要认证的 url
-            .antMatchers("/hello/**").permitAll()
-            // 静态资源不需要认证
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-            // 其他的请求需要认证
-            .anyRequest()
-            .authenticated()
+                // 不需要认证的 url
+                .antMatchers("/hello/**").permitAll()
+                // 其他的请求需要认证
+                .anyRequest()
+                .authenticated()
             .and()
-            // 用户未登录处理
-            .httpBasic()
-            .authenticationEntryPoint(userAuthenticationEntryPoint)
+                // 用户未登录处理
+                .httpBasic()
+                .authenticationEntryPoint(userAuthenticationEntryPoint)
             .and()
-            // 关闭默认的登录配置 (UsernamePasswordAuthenticationFilter), 在下面配置自定义的登录 Filter(支持 json 登录)
-            .formLogin()
+                // 关闭默认的登录配置 (UsernamePasswordAuthenticationFilter), 在下面配置自定义的登录 Filter(支持 json 登录)
+                .formLogin()
             .disable()
-            .logout()
-            // 配置注销地址
-            .logoutUrl("/user/logout")
-            // 配置注销成功处理器
-            .logoutSuccessHandler(userLogoutSuccessHandler)
+                .logout()
+                // 配置注销地址
+                .logoutUrl("/user/logout")
+                // 配置注销成功处理器
+                .logoutSuccessHandler(userLogoutSuccessHandler)
             .and()
-            .exceptionHandling()
-            // 配置没有权限自定义处理类
-            .accessDeniedHandler(userAccessDeniedHandler)
+                .exceptionHandling()
+                // 配置没有权限自定义处理类
+                .accessDeniedHandler(userAccessDeniedHandler)
             .and()
-            // 开启跨域
-            .cors()
-            .configurationSource(corsConfigurationSource())
+                // 开启跨域
+                .cors()
+                .configurationSource(corsConfigurationSource())
             .and()
-            // 取消跨站请求伪造防护
-            .csrf()
+                // 取消跨站请求伪造防护
+                .csrf()
             .disable()
-            // jwt 无状态不需要 session
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // jwt 无状态不需要 session
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .headers()
-            .cacheControl()
+                .headers()
+                .cacheControl()
+                .disable()
+            .and()
+                .rememberMe()
             .disable()
-            .and()
             // 自定义 Jwt 登录认证 Filter
             .addFilterAt(jsonUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             // 自定义 Jwt 过滤器
