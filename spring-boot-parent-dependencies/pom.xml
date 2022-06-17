@@ -26,7 +26,7 @@
         <disruptor.version>3.4.2</disruptor.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-collections4.version>4.1</commons-collections4.version>
-        <fastjson.version>1.2.54</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <contiperf.version>2.1.0</contiperf.version>
         <!--<snakeyaml.version>1.19</snakeyaml.version>-->
         <kafka-clients.version>1.1.0</kafka-clients.version>
